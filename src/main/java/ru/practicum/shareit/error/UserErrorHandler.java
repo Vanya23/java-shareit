@@ -9,55 +9,55 @@ import ru.practicum.shareit.error.exception.*;
 
 @RestControllerAdvice
 public class UserErrorHandler {
-    private final String MY_TEXT_ERROR = "Ошибка %s";
+    private final String MYTEXTERROR = "Ошибка %s";
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleDuplicateEmailException(final DuplicateEmailException e) {
-        return new ErrorResponse(String.format(MY_TEXT_ERROR, e.getMessage()));
+        return new ErrorResponse(String.format(MYTEXTERROR, e.getMessage()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleEmptyEmailException(final EmptyEmailException e) {
-        return new ErrorResponse(String.format(MY_TEXT_ERROR, e.getMessage()));
+        return new ErrorResponse(String.format(MYTEXTERROR, e.getMessage()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIncorrectEmailException(final IncorrectEmailException e) {
-        return new ErrorResponse(String.format(MY_TEXT_ERROR, e.getMessage()));
+        return new ErrorResponse(String.format(MYTEXTERROR, e.getMessage()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIncorrectItemException(final IncorrectItemException e) {
-        return new ErrorResponse(String.format(MY_TEXT_ERROR, e.getMessage()));
+        return new ErrorResponse(String.format(MYTEXTERROR, e.getMessage()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleIncorrectIdUser(final IncorrectIdUser e) {
-        return new ErrorResponse(String.format(MY_TEXT_ERROR, e.getMessage()));
+        return new ErrorResponse(String.format(MYTEXTERROR, e.getMessage()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleIncorrectIdUserInClassItem(final IncorrectIdUserInClassItem e) {
-        return new ErrorResponse(String.format(MY_TEXT_ERROR, e.getMessage()));
+        return new ErrorResponse(String.format(MYTEXTERROR, e.getMessage()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleOtherOwnerItemException(final OtherOwnerItemException e) {
-        return new ErrorResponse(String.format(MY_TEXT_ERROR, e.getMessage()));
+        return new ErrorResponse(String.format(MYTEXTERROR, e.getMessage()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500 — если возникло исключение.
     public ErrorResponse handleIAnyException(final Throwable e) {
         return new ErrorResponse(
-                String.format(MY_TEXT_ERROR, e.getMessage())
+                String.format(MYTEXTERROR, e.getMessage())
         );
     }
 }

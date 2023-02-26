@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService service;
-    private final String HEADER_USER_ID = "X-Sharer-User-Id";
+    private final String HEADERUSERID = "X-Sharer-User-Id";
 
     @GetMapping
     public List<ItemDto> getAllItemByUserId(@RequestHeader("X-Sharer-User-Id") int userId) throws IncorrectIdUserInClassItem {
@@ -44,7 +44,7 @@ public class ItemController {
 
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader(HEADER_USER_ID) int userId, @RequestBody Item item) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem {
+    public ItemDto addItem(@RequestHeader(HEADERUSERID) int userId, @RequestBody Item item) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem {
         return service.addItem(userId, item);
     }
 //    Добавление новой вещи. Будет происходить по эндпойнту POST /items. На вход поступает объект ItemDto.
@@ -52,7 +52,7 @@ public class ItemController {
 //    Именно этот пользователь — владелец вещи. Идентификатор владельца будет поступать на вход в каждом из запросов, рассмотренных далее.
 
     @PatchMapping("/{itemId}")
-    public ItemDto patchItem(@RequestHeader(HEADER_USER_ID) int userId, @PathVariable int itemId, @RequestBody Item item) throws IncorrectItemException, IncorrectIdUserInClassItem, IncorrectIdUser, OtherOwnerItemException {
+    public ItemDto patchItem(@RequestHeader(HEADERUSERID) int userId, @PathVariable int itemId, @RequestBody Item item) throws IncorrectItemException, IncorrectIdUserInClassItem, IncorrectIdUser, OtherOwnerItemException {
         return service.patchItem(userId, itemId, item);
     }
 //    Редактирование вещи. Эндпойнт PATCH /items/{itemId}.
