@@ -2,15 +2,23 @@ package ru.practicum.shareit.user.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.Create;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 
 @NoArgsConstructor
-@RequiredArgsConstructor
-@Data
+@AllArgsConstructor
+@ToString
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
-    int id;
-    @NonNull
+    Long id;
+    @NotBlank(groups = {Create.class})
     String name;
-    @NonNull
+    @NotBlank(groups = {Create.class})
+    @Email(groups = {Create.class})
     String email;
 }

@@ -5,18 +5,17 @@ import ru.practicum.shareit.error.exception.IncorrectIdUserInClassItem;
 import ru.practicum.shareit.error.exception.IncorrectItemException;
 import ru.practicum.shareit.error.exception.OtherOwnerItemException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
 public interface ItemService {
-    ItemDto addItem(int userId, Item item) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem;
+    ItemDto addItem(long userId, ItemDto itemDto) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem;
 
-    ItemDto patchItem(int userId, int itemId, Item item) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem, OtherOwnerItemException;
+    ItemDto patchItem(long userId, long itemId, ItemDto itemDto) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem, OtherOwnerItemException;
 
-    ItemDto getItemById(int itemId) throws IncorrectItemException;
+    ItemDto getItemById(long itemId) throws IncorrectItemException;
 
-    List<ItemDto> getAllItemByUserId(int userId) throws IncorrectIdUserInClassItem;
+    List<ItemDto> getAllItemByUserId(long userId) throws IncorrectIdUserInClassItem;
 
     List<ItemDto> searchItemByText(String text);
 }

@@ -3,15 +3,20 @@ package ru.practicum.shareit.user;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.Email;
+
 
 @NoArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
-@Data
+@ToString
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
-    int id;
+    Long id;
     @NonNull
     String name;
-    @NonNull
+    @Email
     String email;
 }

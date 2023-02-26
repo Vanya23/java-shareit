@@ -4,19 +4,27 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
 
+import javax.validation.constraints.NotBlank;
+
 @NoArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
-@Data
+@ToString
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Item {
-    int id; // уникальный идентификатор вещи;
+    Long id; // уникальный идентификатор вещи;
+    @NotBlank
     @NonNull
     String name; // краткое название;
+    @NotBlank
     @NonNull
     String description; // развёрнутое описание;
     @NonNull
     Boolean available; // статус о том, доступна или нет вещь для аренды;
-    int owner; // владелец вещи;
+    @NonNull
+    Long owner; // владелец вещи;
     ItemRequest request; // если вещь была создана по запросу другого пользователя, то в этом
 //    поле будет храниться ссылка на соответствующий запрос.
 }

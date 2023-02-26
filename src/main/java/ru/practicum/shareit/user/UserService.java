@@ -11,11 +11,11 @@ import java.util.List;
 public interface UserService {
     List<UserDto> getAllUsers();
 
-    UserDto getUserById(int userId) throws IncorrectIdUser;
+    UserDto getUserById(long userId) throws IncorrectIdUser;
 
-    UserDto addUser(User user) throws DuplicateEmailException, IncorrectEmailException, EmptyEmailException;
+    UserDto addUser(UserDto userDto) throws DuplicateEmailException, IncorrectEmailException, EmptyEmailException;
 
-    void deleteUser(int userId);
+    void deleteUser(long userId);
 
-    UserDto patchUser(int userId, User user) throws IncorrectEmailException, EmptyEmailException, DuplicateEmailException, IncorrectIdUser;
+    UserDto patchUser(long userId, UserDto userDto) throws IncorrectEmailException, EmptyEmailException, DuplicateEmailException, IncorrectIdUser;
 }

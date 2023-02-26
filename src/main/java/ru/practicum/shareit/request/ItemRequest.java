@@ -8,11 +8,14 @@ import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
-@Data
+@ToString
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequest {
-    int id; // уникальный идентификатор запроса;
+    Long id; // уникальный идентификатор запроса;
     @NonNull
     String description; // текст запроса, содержащий описание требуемой вещи;
     @NonNull

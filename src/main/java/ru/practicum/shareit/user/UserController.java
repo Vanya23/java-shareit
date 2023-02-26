@@ -1,7 +1,10 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.Create;
+import ru.practicum.shareit.Update;
 import ru.practicum.shareit.error.exception.DuplicateEmailException;
 import ru.practicum.shareit.error.exception.EmptyEmailException;
 import ru.practicum.shareit.error.exception.IncorrectEmailException;
@@ -24,23 +27,24 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getAllUsers(@PathVariable int userId) throws IncorrectIdUser {
+    public UserDto getAllUsers(@PathVariable long userId) throws IncorrectIdUser {
 
         return service.getUserById(userId);
     }
 
     @PostMapping
-    public UserDto addUser(@RequestBody User user) throws DuplicateEmailException, IncorrectEmailException, EmptyEmailException {
-        return service.addUser(user);
+    public UserDto addUser(@Validated({Create.class}) @RequestBody UserDto userDto) throws DuplicateEmailException, IncorrectEmailException, EmptyEmailException {
+        return service.addUser(userDto);
     }
 
+
     @PatchMapping("/{userId}")
-    public UserDto patchUser(@PathVariable int userId, @RequestBody User user) throws IncorrectEmailException, EmptyEmailException, DuplicateEmailException, IncorrectIdUser {
-        return service.patchUser(userId, user);
+    public UserDto patchUser(@PathVariable long userId, @Validated({Update.class}) @RequestBody UserDto userDto) throws IncorrectEmailException, EmptyEmailException, DuplicateEmailException, IncorrectIdUser {
+        return service.patchUser(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable int userId) {
+    public void deleteUser(@PathVariable long userId) {
         service.deleteUser(userId);
 
     }

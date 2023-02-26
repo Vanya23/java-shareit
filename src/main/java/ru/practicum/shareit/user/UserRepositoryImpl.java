@@ -10,8 +10,8 @@ import java.util.Map;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-    private final Map<Integer, User> map = new HashMap<>();
-    private int id = 1;
+    private final Map<Long, User> map = new HashMap<>();
+    private long id = 1;
 
     @Override
     public List<User> getAllUsers() {
@@ -19,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getUserById(int userId) throws IncorrectIdUser {
+    public User getUserById(long userId) throws IncorrectIdUser {
         if (!map.containsKey(userId)) throw new IncorrectIdUser("IncorrectIdUser");
         return map.get(userId);
     }
@@ -32,19 +32,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User patchUser(User user) throws IncorrectIdUser {
-        User temp = getUserById(user.getId());
-        if (user.getName() != null) {
-            temp.setName(user.getName());
-        }
-        if (user.getEmail() != null) {
-            temp.setEmail(user.getEmail());
-        }
-        return temp;
+    public User patchUser(User user) {
+        return null; // не используется временно
     }
 
     @Override
-    public void deleteUser(int userId) {
+    public void deleteUser(long userId) {
         map.remove(userId);
     }
 }

@@ -7,11 +7,11 @@ import java.util.List;
 public interface UserRepository {
     List<User> getAllUsers();
 
-    User getUserById(int userId) throws IncorrectIdUser;
+    User getUserById(long userId) throws IncorrectIdUser;
 
     User addUser(User user);
 
-    void deleteUser(int userId);
+    void deleteUser(long userId);
 
     User patchUser(User user) throws IncorrectIdUser;
 }

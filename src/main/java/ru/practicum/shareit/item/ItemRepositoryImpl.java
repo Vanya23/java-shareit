@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.exception.IncorrectItemException;
 import ru.practicum.shareit.error.exception.OtherOwnerItemException;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ import java.util.Map;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
-    private final Map<Integer, Item> map = new HashMap<>();
-    private int id = 1;
+    private final Map<Long, Item> map = new HashMap<>();
+    private long id = 1;
 
     @Override
     public Item addItem(Item item) {
@@ -23,29 +24,32 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item patchItem(Item item) throws IncorrectItemException, OtherOwnerItemException {
-        Item temp = getItemById(item.getId());
-        if (item.getOwner() != temp.getOwner()) throw new OtherOwnerItemException("OtherOwnerItemException");
-        if (item.getName() != null) {
-            temp.setName(item.getName());
+    public Item patchItem(ItemDto itemDto, long userId) throws IncorrectItemException, OtherOwnerItemException {
+        // Передается ItemDto т.к. по условие на update может приходить не полный объект,
+        // а объект Item не должен содержать нулевые значения
+        Item temp = getItemById(itemDto.getId());
+        if (!(temp.getOwner().equals(userId))) throw new OtherOwnerItemException("OtherOwnerItemException");
+
+        if (itemDto.getName() != null) {
+            temp.setName(itemDto.getName());
         }
-        if (item.getDescription() != null) {
-            temp.setDescription(item.getDescription());
+        if (itemDto.getDescription() != null) {
+            temp.setDescription(itemDto.getDescription());
         }
-        if (item.getAvailable() != null) {
-            temp.setAvailable(item.getAvailable());
+        if (itemDto.getAvailable() != null) {
+            temp.setAvailable(itemDto.getAvailable());
         }
         return temp;
     }
 
     @Override
-    public Item getItemById(int itemId) throws IncorrectItemException {
+    public Item getItemById(long itemId) throws IncorrectItemException {
         if (!map.containsKey(itemId)) throw new IncorrectItemException("IncorrectItemException");
         return map.get(itemId);
     }
 
     @Override
-    public List<Item> getAllItemByUserId(int userId) {
+    public List<Item> getAllItemByUserId(long userId) {
         List<Item> items = new ArrayList<>();
         for (Item itm :
                 map.values()) {
