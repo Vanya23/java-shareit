@@ -7,7 +7,7 @@ import ru.practicum.shareit.error.exception.IncorrectEmailException;
 import java.util.List;
 
 public class CheckEmailService {
-    private static final String PATTERN_EMAIL = "^(.+)@(\\S+)$";
+    private static final String patternEmail = "^(.+)@(\\S+)$";
 
     public static boolean checkDuplicateEmail(User user, List<User> users) {
         for (User usr :
@@ -23,7 +23,7 @@ public class CheckEmailService {
     }
 
     public static boolean checkCorrectEmail(User user) {
-        return user.getEmail().matches(PATTERN_EMAIL);
+        return user.getEmail().matches(patternEmail);
     }
 
     public static void checkAllEmail(User user, List<User> users) throws DuplicateEmailException, EmptyEmailException, IncorrectEmailException {
