@@ -14,6 +14,7 @@ import java.util.Map;
 public class ItemRepositoryImpl implements ItemRepository {
     private final Map<Integer, Item> map = new HashMap<>();
     private int id = 1;
+
     @Override
     public Item addItem(Item item) {
         item.setId(id++);
