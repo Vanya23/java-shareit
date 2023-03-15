@@ -1,10 +1,10 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.error.exception.DuplicateEmailException;
-import ru.practicum.shareit.error.exception.EmptyEmailException;
-import ru.practicum.shareit.error.exception.IncorrectEmailException;
+import ru.practicum.shareit.error.exception.BadRequestException;
+import ru.practicum.shareit.error.exception.InternalServerErrortException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -29,9 +29,9 @@ public class CheckEmailService {
         return user.getEmail().matches(patternEmail);
     }
 
-    public void checkAllEmail(UserDto user, List<User> users) throws DuplicateEmailException, EmptyEmailException, IncorrectEmailException {
-        if (!checkDuplicateEmail(user, users)) throw new DuplicateEmailException("DuplicateEmailException");
-        if (!checkBlankEmail(user)) throw new EmptyEmailException("EmptyEmailException");
-        if (!checkCorrectEmail(user)) throw new IncorrectEmailException("IncorrectEmailException");
+    public void checkAllEmail(UserDto user, List<User> users) throws BadRequestException, InternalServerErrortException {
+        if (!checkDuplicateEmail(user, users)) throw new InternalServerErrortException("DuplicateEmailException");
+        if (!checkBlankEmail(user)) throw new BadRequestException("EmptyEmailException");
+        if (!checkCorrectEmail(user)) throw new BadRequestException("IncorrectEmailException");
     }
 }

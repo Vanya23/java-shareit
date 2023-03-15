@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.error.exception.IncorrectItemException;
+import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 @Component
@@ -19,10 +19,10 @@ public class CheckItemService {
         return !(item.getAvailable() == null);
     }
 
-    public void checkAllItem(ItemDto item) throws IncorrectItemException {
-        if (!checkBlankName(item)) throw new IncorrectItemException("IncorrectItemException");
-        if (!checkBlankDescription(item)) throw new IncorrectItemException("IncorrectItemException");
-        if (!checkBlankAvailable(item)) throw new IncorrectItemException("IncorrectItemException");
+    public void checkAllItem(ItemDto item) throws BadRequestException {
+        if (!checkBlankName(item)) throw new BadRequestException("CheckItemService - checkBlankName");
+        if (!checkBlankDescription(item)) throw new BadRequestException("CheckItemService - checkBlankDescription");
+        if (!checkBlankAvailable(item)) throw new BadRequestException("CheckItemService - checkBlankAvailable");
     }
 
 }

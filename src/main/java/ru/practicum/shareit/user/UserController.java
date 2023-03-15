@@ -5,10 +5,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.Update;
-import ru.practicum.shareit.error.exception.DuplicateEmailException;
-import ru.practicum.shareit.error.exception.EmptyEmailException;
-import ru.practicum.shareit.error.exception.IncorrectEmailException;
-import ru.practicum.shareit.error.exception.IncorrectIdUser;
+import ru.practicum.shareit.error.exception.BadRequestException;
+import ru.practicum.shareit.error.exception.InternalServerErrortException;
+import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
@@ -27,19 +26,21 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getAllUsers(@PathVariable long userId) throws IncorrectIdUser {
+    public UserDto getAllUsers(@PathVariable long userId) throws NotFoundException {
 
         return service.getUserById(userId);
     }
 
     @PostMapping
-    public UserDto addUser(@Validated({Create.class}) @RequestBody UserDto userDto) throws DuplicateEmailException, IncorrectEmailException, EmptyEmailException {
+    public UserDto addUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
+
         return service.addUser(userDto);
     }
 
 
     @PatchMapping("/{userId}")
-    public UserDto patchUser(@PathVariable long userId, @Validated({Update.class}) @RequestBody UserDto userDto) throws IncorrectEmailException, EmptyEmailException, DuplicateEmailException, IncorrectIdUser {
+    public UserDto patchUser(@PathVariable long userId, @Validated({Update.class}) @RequestBody UserDto userDto)
+            throws InternalServerErrortException, BadRequestException {
         return service.patchUser(userId, userDto);
     }
 

@@ -3,9 +3,11 @@ package ru.practicum.shareit.item.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.Create;
+import ru.practicum.shareit.booking.dto.BookingDtoOutputForItem;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +25,10 @@ public class ItemDto {
     Boolean available; // статус о том, доступна или нет вещь для аренды;
     Long request; // если вещь была создана по запросу другого пользователя, то в этом
 
-//    поле будет храниться ссылка на соответствующий запрос.
+    BookingDtoOutputForItem lastBooking; // информация последнего бронирования
+
+    BookingDtoOutputForItem nextBooking; // информация ближайшего бронирования
+
+    List<CommentDto> comments; // комментарии
+
 }

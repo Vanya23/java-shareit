@@ -1,20 +1,16 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.error.exception.IncorrectItemException;
-import ru.practicum.shareit.error.exception.OtherOwnerItemException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public interface ItemRepository {
-    Item addItem(Item item);
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    //    List<Item> findAllByOwner(User id);
+    ArrayList<Item> findAllByOwnerOrderById(User id);
 
-    Item patchItem(ItemDto itemDto, long userId) throws IncorrectItemException, OtherOwnerItemException;
+    //    ArrayList<Item> findAllByOwnerOrderById(User id);
+    boolean existsById(Long id);
 
-    Item getItemById(long itemId) throws IncorrectItemException;
-
-    List<Item> getAllItemByUserId(long userId);
-
-    List<Item> getAllItems();
 }
