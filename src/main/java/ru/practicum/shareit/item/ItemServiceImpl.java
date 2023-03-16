@@ -145,7 +145,7 @@ public class ItemServiceImpl implements ItemService {
         for (Item item :
                 items) {
             if (bookingRepository.existsByItem_Id(item.getId())) {
-                ArrayList<Booking> lastBookings = bookingRepository.findAllByItemAndStatusAndEndBeforeOrderByEndDesc(
+                ArrayList<Booking> lastBookings = bookingRepository.findAllByItemAndStatusAndStartBeforeOrderByEndDesc(
                         item, BookingStatus.APPROVED, callTime);
                 ArrayList<Booking> nextBookings = bookingRepository.findAllByItemAndStatusAndStartAfterOrderByStartAsc(
                         item, BookingStatus.APPROVED, callTime);
