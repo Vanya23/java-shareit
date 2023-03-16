@@ -117,7 +117,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto postComment(long userId, long itemId, CommentDto commentDto) throws BadRequestException {
-        LocalDateTime callTime = LocalDateTime.parse(LocalDateTime.now().format(bookingPatternTime.getFormatter())); // не ставить точку оставки до этого момента
+        LocalDateTime callTime = LocalDateTime.parse(LocalDateTime.now().plusSeconds(1).format(bookingPatternTime.getFormatter())); // не ставить точку оставки до этого момента
         // проверка есть ли такая вещь и такой автор
         if (!(repository.existsById(itemId) && userRepository.existsById(userId)))
             throw new BadRequestException(getClass() + "  no exist user or item");
