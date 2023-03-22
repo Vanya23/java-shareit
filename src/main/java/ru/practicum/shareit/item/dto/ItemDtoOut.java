@@ -11,7 +11,9 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString @Getter @Setter
+@ToString
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDtoOut {
     Long id; // уникальный идентификатор вещи;

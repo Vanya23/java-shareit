@@ -43,7 +43,7 @@ public class CommentMapper {
     public CommentDtoOut fromCommentToCommentDtoOut(Comment comment) {
         CommentDtoOut commentDto = new CommentDtoOut(comment.getId(), comment.getText(),
                 comment.getAuthor().getName(),
-                 comment.getCreated().format(bookingPatternTime.getFormatter())
+                comment.getCreated().format(bookingPatternTime.getFormatter())
         );
         return commentDto;
     }

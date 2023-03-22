@@ -3,15 +3,15 @@ package ru.practicum.shareit.item.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.Create;
-import ru.practicum.shareit.booking.dto.BookingDtoOutputForItem;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString @Getter @Setter
+@ToString
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDtoIn {
     Long id; // уникальный идентификатор вещи;

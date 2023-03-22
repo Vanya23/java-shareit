@@ -45,7 +45,7 @@ public class BookingMapper {
         return bookingDtoList;
     }
 
-    public Booking fromBookingDtoInputToBooking(BookingDtoInput bookingDto, Long booker, BookingStatus status,DateTimeFormatter formatter,
+    public Booking fromBookingDtoInputToBooking(BookingDtoInput bookingDto, Long booker, BookingStatus status, DateTimeFormatter formatter,
                                                 ItemRepository itemRepository, UserRepository userRepository) {
         return new Booking(
                 bookingDto.getStart(),

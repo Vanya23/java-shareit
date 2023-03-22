@@ -4,12 +4,13 @@ import lombok.*;
 import ru.practicum.shareit.Create;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString @Getter @Setter
+@ToString
+@Getter
+@Setter
 public class CommentDtoOut {
     Long id; // уникальный идентификатор комментария;
     @NotBlank(groups = {Create.class})

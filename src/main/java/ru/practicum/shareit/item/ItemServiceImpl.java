@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoOut addItem(long userId, ItemDtoIn itemDto)   {
+    public ItemDtoOut addItem(long userId, ItemDtoIn itemDto) {
         checkUserIdInItem(userId); // проверка существует ли user по id на исключение
         // Проверка объекта не выполняется т.к. сделана в @Validated
         Item item = itemMapper.fromItemDtoInToItem(itemDto, userId, userRepository);
@@ -55,7 +55,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoOut patchItem(long userId, long itemId, ItemDtoIn itemDto)   {
+    public ItemDtoOut patchItem(long userId, long itemId, ItemDtoIn itemDto) {
         checkUserIdInItem(userId); // проверка существует ли user по id на исключение
         itemDto.setId(itemId);
         // Передается ItemDto т.к. по условие на update может приходить не полный объект,
@@ -77,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoOut getItemById(long itemId, long userId)   {
+    public ItemDtoOut getItemById(long itemId, long userId) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         if (!repository.existsById(itemId))
             throw new NotFoundException(getClass() + " getItemById -> EntityNotFoundException");
@@ -95,7 +95,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoOut> getAllItemByUserId(long userId)   {
+    public List<ItemDtoOut> getAllItemByUserId(long userId) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         checkUserIdInItem(userId); // проверка существует ли user по id на исключение
         List<Item> items = repository.findAllByOwner(userRepository.getReferenceById(userId),
@@ -109,14 +109,14 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoOut> searchItemByText(String textForFind) {
         List<Item> ans;
-        if(textForFind.equals("")) ans = new ArrayList<>();
+        if (textForFind.equals("")) ans = new ArrayList<>();
         else ans = repository.searchItemByText(textForFind);
         return itemMapper.fromListItemToListItemDtoOut(ans);
     }
 
     @Override
     @Transactional
-    public CommentDtoOut postComment(long userId, long itemId, CommentDtoIn commentDto)  {
+    public CommentDtoOut postComment(long userId, long itemId, CommentDtoIn commentDto) {
         LocalDateTime callTime = LocalDateTime.parse(LocalDateTime.now().plusSeconds(1).format(bookingPatternTime.getFormatter())); // не ставить точку оставки до этого момента
         // проверка есть ли такая вещь и такой автор
         if (!(repository.existsById(itemId) && userRepository.existsById(userId)))
@@ -135,7 +135,7 @@ public class ItemServiceImpl implements ItemService {
         return commentMapper.fromCommentToCommentDtoOut(comment);
     }
 
-    private void checkUserIdInItem(long userId)  {
+    private void checkUserIdInItem(long userId) {
         if (!userRepository.existsUserById(userId))
             throw new NotFoundException("IncorrectIdUserInClassItem"); // чтобы не прокручивался счетчик в бд
     }
@@ -144,7 +144,7 @@ public class ItemServiceImpl implements ItemService {
         // создание мапы booking
         Map<Long, List<Booking>> mapLastBookings = new HashMap<>();
         Map<Long, List<Booking>> mapNextBookings = new HashMap<>();
-        for (Item item:
+        for (Item item :
                 items) {
             mapLastBookings.put(item.getId(), new ArrayList<>());
             mapNextBookings.put(item.getId(), new ArrayList<>());
@@ -164,12 +164,12 @@ public class ItemServiceImpl implements ItemService {
 
         for (Item item :
                 items) {
-                List<Booking> lastBookings = mapLastBookings.get(item.getId());
-                List<Booking> nextBookings = mapNextBookings.get(item.getId());
-                if (lastBookings != null && lastBookings.size() > 0)
-                    item.setLastBooking(lastBookings.get(0));
-                if (nextBookings != null && nextBookings.size() > 0)
-                    item.setNextBooking(nextBookings.get(0));
+            List<Booking> lastBookings = mapLastBookings.get(item.getId());
+            List<Booking> nextBookings = mapNextBookings.get(item.getId());
+            if (lastBookings != null && lastBookings.size() > 0)
+                item.setLastBooking(lastBookings.get(0));
+            if (nextBookings != null && nextBookings.size() > 0)
+                item.setNextBooking(nextBookings.get(0));
         }
     }
 
@@ -177,12 +177,12 @@ public class ItemServiceImpl implements ItemService {
         // добавление комментария
         // создание мапы комментариев
         Map<Long, List<Comment>> mapComments = new HashMap<>();
-        for (Item item:
-             items) {
+        for (Item item :
+                items) {
             mapComments.put(item.getId(), new ArrayList<>());
         }
         // получение комментариев для списка item
-         List<Comment> allComments = commentRepository.findAllByItem_IdIn(new ArrayList<>(mapComments.keySet()), sortIdDesc);
+        List<Comment> allComments = commentRepository.findAllByItem_IdIn(new ArrayList<>(mapComments.keySet()), sortIdDesc);
 // заполение мапы комментариями
         for (Comment comment : allComments) {
             mapComments.get(comment.getItem().getId()).add(comment);

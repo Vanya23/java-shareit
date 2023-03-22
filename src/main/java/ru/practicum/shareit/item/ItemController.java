@@ -20,13 +20,13 @@ public class ItemController {
     private final String headerUserId = "X-Sharer-User-Id";
 
     @GetMapping
-    public List<ItemDtoOut> getAllItemByUserId(@RequestHeader(headerUserId) long userId)   {
+    public List<ItemDtoOut> getAllItemByUserId(@RequestHeader(headerUserId) long userId) {
         return service.getAllItemByUserId(userId);
     }
 
     //    Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой. Эндпойнт
     @GetMapping("/{itemId}")
-    public ItemDtoOut getItemById(@RequestHeader(headerUserId) long userId, @PathVariable long itemId)   {
+    public ItemDtoOut getItemById(@RequestHeader(headerUserId) long userId, @PathVariable long itemId) {
         return service.getItemById(itemId, userId);
     }
 
@@ -46,7 +46,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDtoOut addItem(@RequestHeader(headerUserId) long userId,
-                             @Validated({Create.class}) @RequestBody ItemDtoIn itemDto)   {
+                              @Validated({Create.class}) @RequestBody ItemDtoIn itemDto) {
         return service.addItem(userId, itemDto);
     }
 //    Добавление новой вещи. Будет происходить по эндпойнту POST /items. На вход поступает объект ItemDto.
@@ -55,7 +55,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDtoOut patchItem(@RequestHeader(headerUserId) long userId, @PathVariable long itemId,
-                               @Validated({Update.class}) @RequestBody ItemDtoIn itemDto)   {
+                                @Validated({Update.class}) @RequestBody ItemDtoIn itemDto) {
         return service.patchItem(userId, itemId, itemDto);
     }
 
@@ -63,7 +63,7 @@ public class ItemController {
 //    Изменить можно название, описание и статус доступа к аренде. Редактировать вещь может только её владелец.
     @PostMapping("/{itemId}/comment")
     public CommentDtoOut postComment(@RequestHeader(headerUserId) long userId, @PathVariable long itemId,
-                                     @Validated({Create.class}) @RequestBody CommentDtoIn commentDto)   {
+                                     @Validated({Create.class}) @RequestBody CommentDtoIn commentDto) {
         return service.postComment(userId, itemId, commentDto);
     }
 //    Редактирование вещи. Эндпойнт PATCH /items/{itemId}.

@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOutput;
-import ru.practicum.shareit.error.exception.BadRequestException;
-import ru.practicum.shareit.error.exception.NotFoundException;
 
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDtoOutput> getAllBookingsByUserId(@RequestHeader(headerUserId) long userId,
-                                                         @RequestParam(defaultValue = "ALL") String state)   {
+                                                         @RequestParam(defaultValue = "ALL") String state) {
         return service.getAllBookingsByUserId(userId, state);
     }
 
@@ -38,7 +36,7 @@ public class BookingController {
 //    одной вещи. Работа параметра state аналогична его работе в предыдущем сценарии.
     @GetMapping("/owner")
     public List<BookingDtoOutput> getAllBookingsByOwner(@RequestHeader(headerUserId) long userId,
-                                                        @RequestParam(defaultValue = "ALL") String state)   {
+                                                        @RequestParam(defaultValue = "ALL") String state) {
         return service.getAllBookingsByOwner(userId, state);
     }
 
@@ -46,7 +44,7 @@ public class BookingController {
 //    либо владельцем вещи, к которой относится бронирование. Эндпоинт — GET /bookings/{bookingId}.
     @GetMapping("/{bookingId}")
     public BookingDtoOutput getBookingById(@RequestHeader(headerUserId) long userId,
-                                           @PathVariable long bookingId)   {
+                                           @PathVariable long bookingId) {
 
         return service.getBookingById(bookingId, userId);
     }
@@ -55,7 +53,7 @@ public class BookingController {
 //    После создания запрос находится в статусе WAITING — «ожидает подтверждения».
     @PostMapping
     public BookingDtoOutput addBooking(@RequestHeader(headerUserId) long userId,
-                                       @Validated({Create.class}) @RequestBody BookingDtoInput booking)    {
+                                       @Validated({Create.class}) @RequestBody BookingDtoInput booking) {
         return service.addBooking(userId, booking);
     }
 
@@ -67,7 +65,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingDtoOutput patchBooking(@PathVariable long bookingId,
                                          @RequestHeader(headerUserId) long userId,
-                                         @RequestParam Boolean approved)   {
+                                         @RequestParam Boolean approved) {
         return service.patchBooking(bookingId, userId, approved);
     }
 

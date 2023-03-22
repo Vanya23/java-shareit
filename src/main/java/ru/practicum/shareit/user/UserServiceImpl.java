@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(long userId)   {
+    public UserDto getUserById(long userId) {
         try {
             return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
         } catch (EntityNotFoundException e) {
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto patchUser(long userId, UserDto userDto)  {
+    public UserDto patchUser(long userId, UserDto userDto) {
         userDto.setId(userId);
         User temp = repository.getReferenceById(userDto.getId());
         if (Strings.isNotBlank(userDto.getName())) {

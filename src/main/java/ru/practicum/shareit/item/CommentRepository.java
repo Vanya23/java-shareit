@@ -11,6 +11,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     boolean existsById(Long id);
 
     List<Comment> findAllByItem_Id(Long itemId, Sort sort);
-//    ArrayList<Comment> findAllByItem_Id(Long itemId, Sort sort);
+
+    //    ArrayList<Comment> findAllByItem_Id(Long itemId, Sort sort);
     List<Comment> findAllByItem_IdIn(List<Long> itemId, Sort sort);
 }

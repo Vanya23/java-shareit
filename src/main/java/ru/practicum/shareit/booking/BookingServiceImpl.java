@@ -40,9 +40,9 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public List<BookingDtoOutput> getAllBookingsByUserId(long userId, String state)   {
+    public List<BookingDtoOutput> getAllBookingsByUserId(long userId, String state) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
-                BookingState bookingState = null;
+        BookingState bookingState = null;
         try {
             bookingState = BookingState.valueOf(state);
         } catch (IllegalArgumentException e) {
@@ -76,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoOutput> getAllBookingsByOwner(long userId, String state)   {
+    public List<BookingDtoOutput> getAllBookingsByOwner(long userId, String state) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         BookingState bookingState = null;
         try {
@@ -131,7 +131,7 @@ public class BookingServiceImpl implements BookingService {
         if (!(userRepository.existsUserById(userId) && itemRepository.existsById(bookingDto.getItemId())))
             throw new NotFoundException(getClass() + "addBooking -> item or user not exist");
         Booking booking = bookingMapper.fromBookingDtoInputToBooking(bookingDto, userId,
-                BookingStatus.WAITING,bookingPatternTime.getFormatter(),
+                BookingStatus.WAITING, bookingPatternTime.getFormatter(),
                 itemRepository, userRepository);
         validateTime(booking, callTime); // валидация времени
         if (booking.getBooker().getId().equals(booking.getItem().getOwner().getId()))
