@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserMapper;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +29,9 @@ public class BookingMapper {
     public BookingDtoInput fromBookingToBookingDtoInput(Booking booking) {
         return new BookingDtoInput(
                 booking.getId(),
-                booking.getStart().format(bookingPatternTime.getFormatter()),
-                booking.getEnd().format(bookingPatternTime.getFormatter()),
-                booking.getItem().getId(),
-                booking.getBooker().getId(),
-                booking.getStatus().name()
+                booking.getStart(),
+                booking.getEnd(),
+                booking.getItem().getId()
         );
 
     }
@@ -48,14 +45,14 @@ public class BookingMapper {
         return bookingDtoList;
     }
 
-    public Booking fromBookingDtoInputToBooking(BookingDtoInput bookingDto, DateTimeFormatter formatter,
+    public Booking fromBookingDtoInputToBooking(BookingDtoInput bookingDto, Long booker, BookingStatus status,DateTimeFormatter formatter,
                                                 ItemRepository itemRepository, UserRepository userRepository) {
         return new Booking(
-                LocalDateTime.parse(bookingDto.getStart(), formatter),
-                LocalDateTime.parse(bookingDto.getEnd(), formatter),
+                bookingDto.getStart(),
+                bookingDto.getEnd(),
                 itemRepository.getReferenceById(bookingDto.getItemId()),
-                userRepository.getReferenceById(bookingDto.getBooker()),
-                BookingStatus.valueOf(bookingDto.getStatus())
+                userRepository.getReferenceById(booker),
+                status
         );
 
 
@@ -66,7 +63,7 @@ public class BookingMapper {
                 booking.getId(),
                 booking.getStart().format(bookingPatternTime.getFormatter()),
                 booking.getEnd().format(bookingPatternTime.getFormatter()),
-                itemMapper.fromItemToItemDto(booking.getItem()),
+                itemMapper.fromItemToItemDtoIn(booking.getItem()),
                 userMapper.fromUserToUserDto(booking.getBooker()),
                 booking.getStatus().name()
         );

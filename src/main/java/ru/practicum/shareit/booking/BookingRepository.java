@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -7,36 +8,40 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    ArrayList<Booking> findAllByBookerOrderByEndDesc(User booker);
+    List<Booking> findAllByBooker(User booker, Sort sort);
 
-    ArrayList<Booking> findAllByBookerAndStatusOrderByEndDesc(User booker, BookingStatus status);
+    List<Booking> findAllByBookerAndStatus(User booker, BookingStatus status, Sort sort);
 
-    ArrayList<Booking> findAllByBookerAndEndBeforeOrderByEndDesc(User booker, LocalDateTime end);
+    List<Booking> findAllByBookerAndEndBefore(User booker, LocalDateTime end, Sort sort);
 
-    ArrayList<Booking> findAllByBookerAndStartBeforeAndEndAfterOrderByEndDesc(User booker, LocalDateTime start, LocalDateTime end);
+    List<Booking> findAllByBookerAndStartBeforeAndEndAfter(User booker, LocalDateTime start,
+                                                                LocalDateTime end, Sort sort);
 
-    ArrayList<Booking> findAllByBookerAndStartAfterOrderByEndDesc(User booker, LocalDateTime start);
+    List<Booking> findAllByBookerAndStartAfter(User booker, LocalDateTime start, Sort sort);
 
-    ArrayList<Booking> findAllByItemInOrderByEndDesc(List<Item> items);
+    List<Booking> findAllByItemIn(List<Item> items, Sort sort);
 
-    ArrayList<Booking> findAllByItemInAndStatusOrderByEndDesc(List<Item> items, BookingStatus status);
+    List<Booking> findAllByItemInAndStatus(List<Item> items, BookingStatus status, Sort sort);
 
-    ArrayList<Booking> findAllByItemInAndEndBeforeOrderByEndDesc(List<Item> items, LocalDateTime end);
+    List<Booking> findAllByItemInAndEndBefore(List<Item> items, LocalDateTime end, Sort sort);
 
-    ArrayList<Booking> findAllByItemInAndStartBeforeAndEndAfterOrderByEndDesc(List<Item> items, LocalDateTime start, LocalDateTime end);
+    List<Booking> findAllByItemInAndStartBeforeAndEndAfter(List<Item> items, LocalDateTime start,
+                                                                LocalDateTime end, Sort sort);
 
-    ArrayList<Booking> findAllByItemInAndStartAfterOrderByEndDesc(List<Item> items, LocalDateTime start);
+    List<Booking> findAllByItemInAndStartAfter(List<Item> items, LocalDateTime start, Sort sort);
 
-    ArrayList<Booking> findAllByItemAndStatusAndStartBeforeOrderByEndDesc(Item item, BookingStatus status, LocalDateTime ltime);
+    List<Booking> findAllByItem_IdInAndStatusAndStartBefore(List<Long> itemId, BookingStatus status,
+                                                            LocalDateTime ltime, Sort sort);
 
-    ArrayList<Booking> findAllByItemAndStatusAndStartAfterOrderByStartAsc(Item item, BookingStatus status, LocalDateTime ltime);
+    List<Booking> findAllByItem_IdInAndStatusAndStartAfter(List<Long> itemId, BookingStatus status,
+                                                           LocalDateTime ltime, Sort sort);
 
     Boolean existsByItem_Id(Long id);
 
-    ArrayList<Booking> findAllByItem_IdAndBooker_IdAndStatusAndEndBefore(Long itemId, Long bookerId, BookingStatus status, LocalDateTime callTime);
+    List<Booking> findAllByItem_IdAndBooker_IdAndStatusAndEndBefore(Long itemId, Long bookerId,
+                                                                         BookingStatus status, LocalDateTime callTime);
 
 }

@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface BookingService {
 
-    List<BookingDtoOutput> getAllBookingsByUserId(long userId, String state) throws Exception;
+    List<BookingDtoOutput> getAllBookingsByUserId(long userId, String state)  ;
 
-    List<BookingDtoOutput> getAllBookingsByOwner(long userId, String state) throws Exception;
+    List<BookingDtoOutput> getAllBookingsByOwner(long userId, String state)  ;
 
-    BookingDtoOutput getBookingById(long bookingId, long userId) throws NotFoundException;
+    BookingDtoOutput getBookingById(long bookingId, long userId)  ;
 
-    BookingDtoOutput addBooking(long userId, BookingDtoInput bookingDto) throws BadRequestException, NotFoundException;
+    BookingDtoOutput addBooking(long userId, BookingDtoInput bookingDto)  ;
 
-    BookingDtoOutput patchBooking(long bookingId, long userId, Boolean approved) throws Exception;
+    BookingDtoOutput patchBooking(long bookingId, long userId, Boolean approved)  ;
 }

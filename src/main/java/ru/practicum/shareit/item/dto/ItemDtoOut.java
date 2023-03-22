@@ -11,11 +11,9 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Getter
-@Setter
+@ToString @Getter @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDto {
+public class ItemDtoOut {
     Long id; // уникальный идентификатор вещи;
     @NotBlank(groups = {Create.class})
     String name; // краткое название;
@@ -29,6 +27,6 @@ public class ItemDto {
 
     BookingDtoOutputForItem nextBooking; // информация ближайшего бронирования
 
-    List<CommentDto> comments; // комментарии
+    List<CommentDtoOut> comments; // комментарии
 
 }

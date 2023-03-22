@@ -18,27 +18,23 @@ import java.util.List;
 public class ItemMapper {
     CommentMapper commentMapper;
 
-    public ItemDto fromItemToItemDto(Item item) {
-        ItemDto itemDto = new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                item.getRequest() != null ? item.getRequest().getId() : null,
-                item.getLastBooking() != null ? fromBookingToBookingDtoOutputForItem(item.getLastBooking()) : null,
-                item.getNextBooking() != null ? fromBookingToBookingDtoOutputForItem(item.getNextBooking()) : null,
-                item.getComments() != null ? commentMapper.fromListCommentToCommentDto(item.getComments()) : null
+    public ItemDtoIn fromItemToItemDtoIn(Item item) {
+        ItemDtoIn itemDto = new ItemDtoIn(item.getId(), item.getName(), item.getDescription(), item.getAvailable()
         );
         return itemDto;
     }
 
-    public List<ItemDto> fromListItemToListItemDto(List<Item> items) {
-        List<ItemDto> itemDtoList = new ArrayList<>();
+    public List<ItemDtoIn> fromListItemToListItemDtoIn(List<Item> items) {
+        List<ItemDtoIn> itemDtoList = new ArrayList<>();
         for (Item item :
                 items) {
-            itemDtoList.add(fromItemToItemDto(item));
+            itemDtoList.add(fromItemToItemDtoIn(item));
         }
         return itemDtoList;
     }
 
 
-    public Item fromItemDtoToItem(ItemDto itemDto, long userId, UserRepository userRepository) {
+    public Item fromItemDtoInToItem(ItemDtoIn itemDto, long userId, UserRepository userRepository) {
         Item item = new Item(itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
@@ -46,6 +42,26 @@ public class ItemMapper {
                 userRepository.getReferenceById(userId),
                 null, null, null, null);
         return item;
+    }
+
+
+    public ItemDtoOut fromItemToItemDtoOut(Item item) {
+        ItemDtoOut itemDto = new ItemDtoOut(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+                item.getRequest() != null ? item.getRequest().getId() : null,
+                item.getLastBooking() != null ? fromBookingToBookingDtoOutputForItem(item.getLastBooking()) : null,
+                item.getNextBooking() != null ? fromBookingToBookingDtoOutputForItem(item.getNextBooking()) : null,
+                item.getComments() != null ? commentMapper.fromListCommentToCommentDtoOut(item.getComments()) : null
+        );
+        return itemDto;
+    }
+
+    public List<ItemDtoOut> fromListItemToListItemDtoOut(List<Item> items) {
+        List<ItemDtoOut> itemDtoList = new ArrayList<>();
+        for (Item item :
+                items) {
+            itemDtoList.add(fromItemToItemDtoOut(item));
+        }
+        return itemDtoList;
     }
 
     public BookingDtoOutputForItem fromBookingToBookingDtoOutputForItem(Booking booking) {

@@ -12,7 +12,6 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-//@RequiredArgsConstructor
 @ToString
 @Getter
 @Setter

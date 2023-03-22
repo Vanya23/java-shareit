@@ -1,22 +1,22 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.error.exception.BadRequestException;
-import ru.practicum.shareit.error.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.CommentDtoIn;
+import ru.practicum.shareit.item.dto.CommentDtoOut;
+import ru.practicum.shareit.item.dto.ItemDtoIn;
+import ru.practicum.shareit.item.dto.ItemDtoOut;
 
 import java.util.List;
 
 public interface ItemService {
-    ItemDto addItem(long userId, ItemDto itemDto) throws NotFoundException;
+    ItemDtoOut addItem(long userId, ItemDtoIn itemDto)  ;
 
-    ItemDto patchItem(long userId, long itemId, ItemDto itemDto) throws NotFoundException;
+    ItemDtoOut patchItem(long userId, long itemId, ItemDtoIn itemDto)  ;
 
-    ItemDto getItemById(long itemId, long userId) throws NotFoundException;
+    ItemDtoOut getItemById(long itemId, long userId)  ;
 
-    List<ItemDto> getAllItemByUserId(long userId) throws NotFoundException;
+    List<ItemDtoOut> getAllItemByUserId(long userId)  ;
 
-    List<ItemDto> searchItemByText(String text);
+    List<ItemDtoOut> searchItemByText(String text);
 
-    CommentDto postComment(long userId, long itemId, CommentDto commentDto) throws BadRequestException;
+    CommentDtoOut postComment(long userId, long itemId, CommentDtoIn commentDto)  ;
 }

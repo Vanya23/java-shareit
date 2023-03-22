@@ -1,14 +1,16 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.item.model.Comment;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     boolean existsById(Long id);
 
-    ArrayList<Comment> findAllByItem_IdOrderById(Long itemId);
-
+    List<Comment> findAllByItem_Id(Long itemId, Sort sort);
+//    ArrayList<Comment> findAllByItem_Id(Long itemId, Sort sort);
+    List<Comment> findAllByItem_IdIn(List<Long> itemId, Sort sort);
 }

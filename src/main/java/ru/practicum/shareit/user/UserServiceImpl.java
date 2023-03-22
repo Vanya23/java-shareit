@@ -1,9 +1,9 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.error.exception.BadRequestException;
-import ru.practicum.shareit.error.exception.InternalServerErrortException;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -14,9 +14,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
-    private final CheckEmailService checkEmailService;
     private final UserMapper userMapper;
 
     @Override
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(long userId) throws NotFoundException {
+    public UserDto getUserById(long userId)   {
         try {
             return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
         } catch (EntityNotFoundException e) {
@@ -34,31 +34,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto addUser(UserDto userDto) {
         // На соответствие почты и null проверка объекта не выполняется т.к. сделана в @Validated
         // по условию задачи проверка уникальности почты выполняется в БД
-//        if (!checkEmailService.checkDuplicateEmail(userDto, repository.findAll()))
-//            throw new DuplicateEmailException("DuplicateEmailException");
         return userMapper.fromUserToUserDto(repository.save(userMapper.fromUserDtoToUser(userDto)));
     }
 
     @Override
+    @Transactional
     public void deleteUser(long userId) {
         repository.deleteById(userId);
     }
 
     @Override
-    public UserDto patchUser(long userId, UserDto userDto) throws InternalServerErrortException, BadRequestException {
+    @Transactional
+    public UserDto patchUser(long userId, UserDto userDto)  {
         userDto.setId(userId);
-        if (userDto.getEmail() != null) checkEmailService.checkAllEmail(userDto, repository.findAll());
         User temp = repository.getReferenceById(userDto.getId());
-        if (userDto.getName() != null) {
+        if (Strings.isNotBlank(userDto.getName())) {
             temp.setName(userDto.getName());
         }
-        if (userDto.getEmail() != null) {
+        if (Strings.isNotBlank(userDto.getEmail())) {
             temp.setEmail(userDto.getEmail());
         }
-        repository.saveAndFlush(temp); // обновление базы
         return userMapper.fromUserToUserDto(repository.getReferenceById(userDto.getId()));
     }
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.Update;
 import ru.practicum.shareit.error.exception.BadRequestException;
-import ru.practicum.shareit.error.exception.InternalServerErrortException;
+import ru.practicum.shareit.error.exception.InternalServerErrorException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getAllUsers(@PathVariable long userId) throws NotFoundException {
+    public UserDto getAllUsers(@PathVariable long userId)   {
 
         return service.getUserById(userId);
     }
@@ -40,7 +40,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public UserDto patchUser(@PathVariable long userId, @Validated({Update.class}) @RequestBody UserDto userDto)
-            throws InternalServerErrortException, BadRequestException {
+             {
         return service.patchUser(userId, userDto);
     }
 

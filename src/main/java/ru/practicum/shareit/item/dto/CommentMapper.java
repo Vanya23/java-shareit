@@ -16,27 +16,45 @@ import java.util.List;
 public class CommentMapper {
     BookingPatternTime bookingPatternTime;
 
-    public CommentDto fromCommentToCommentDto(Comment comment) {
-        CommentDto commentDto = new CommentDto(comment.getId(), comment.getText(),
+    public CommentDtoIn fromCommentToCommentDtoIn(Comment comment) {
+        CommentDtoIn commentDto = new CommentDtoIn(comment.getId(), comment.getText(),
                 comment.getAuthor().getName(),
-                comment.getCreated().format(bookingPatternTime.getFormatter())
+
+                comment.getCreated()
         );
         return commentDto;
     }
 
-    public List<CommentDto> fromListCommentToCommentDto(List<Comment> comments) {
-        List<CommentDto> commentDtoList = new ArrayList<>();
+    public List<CommentDtoIn> fromListCommentToCommentDtoIn(List<Comment> comments) {
+        List<CommentDtoIn> commentDtoList = new ArrayList<>();
         for (Comment comment :
                 comments) {
-            commentDtoList.add(fromCommentToCommentDto(comment));
+            commentDtoList.add(fromCommentToCommentDtoIn(comment));
         }
         return commentDtoList;
     }
 
-    public Comment fromCommentDtoToComment(CommentDto commentDto) {
+    public Comment fromCommentDtoInToComment(CommentDtoIn commentDto) {
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
         return comment;
+    }
+
+    public CommentDtoOut fromCommentToCommentDtoOut(Comment comment) {
+        CommentDtoOut commentDto = new CommentDtoOut(comment.getId(), comment.getText(),
+                comment.getAuthor().getName(),
+                 comment.getCreated().format(bookingPatternTime.getFormatter())
+        );
+        return commentDto;
+    }
+
+    public List<CommentDtoOut> fromListCommentToCommentDtoOut(List<Comment> comments) {
+        List<CommentDtoOut> commentDtoList = new ArrayList<>();
+        for (Comment comment :
+                comments) {
+            commentDtoList.add(fromCommentToCommentDtoOut(comment));
+        }
+        return commentDtoList;
     }
 
 

@@ -5,10 +5,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.Update;
-import ru.practicum.shareit.error.exception.BadRequestException;
-import ru.practicum.shareit.error.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.CommentDtoIn;
+import ru.practicum.shareit.item.dto.CommentDtoOut;
+import ru.practicum.shareit.item.dto.ItemDtoIn;
+import ru.practicum.shareit.item.dto.ItemDtoOut;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ public class ItemController {
     private final String headerUserId = "X-Sharer-User-Id";
 
     @GetMapping
-    public List<ItemDto> getAllItemByUserId(@RequestHeader(headerUserId) long userId) throws NotFoundException {
+    public List<ItemDtoOut> getAllItemByUserId(@RequestHeader(headerUserId) long userId)   {
         return service.getAllItemByUserId(userId);
     }
 
     //    Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой. Эндпойнт
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader(headerUserId) long userId, @PathVariable long itemId) throws NotFoundException {
+    public ItemDtoOut getItemById(@RequestHeader(headerUserId) long userId, @PathVariable long itemId)   {
         return service.getItemById(itemId, userId);
     }
 
@@ -34,7 +34,7 @@ public class ItemController {
 //    Эндпойнт GET /items/{itemId}. Информацию о вещи может просмотреть любой пользователь.
 
     @GetMapping("/search")
-    public List<ItemDto> searchItemByText(@RequestParam String text) {
+    public List<ItemDtoOut> searchItemByText(@RequestParam String text) {
         return service.searchItemByText(text);
 
     }
@@ -45,8 +45,8 @@ public class ItemController {
 
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader(headerUserId) long userId,
-                           @Validated({Create.class}) @RequestBody ItemDto itemDto) throws NotFoundException {
+    public ItemDtoOut addItem(@RequestHeader(headerUserId) long userId,
+                             @Validated({Create.class}) @RequestBody ItemDtoIn itemDto)   {
         return service.addItem(userId, itemDto);
     }
 //    Добавление новой вещи. Будет происходить по эндпойнту POST /items. На вход поступает объект ItemDto.
@@ -54,16 +54,16 @@ public class ItemController {
 //    Именно этот пользователь — владелец вещи. Идентификатор владельца будет поступать на вход в каждом из запросов, рассмотренных далее.
 
     @PatchMapping("/{itemId}")
-    public ItemDto patchItem(@RequestHeader(headerUserId) long userId, @PathVariable long itemId,
-                             @Validated({Update.class}) @RequestBody ItemDto itemDto) throws NotFoundException {
+    public ItemDtoOut patchItem(@RequestHeader(headerUserId) long userId, @PathVariable long itemId,
+                               @Validated({Update.class}) @RequestBody ItemDtoIn itemDto)   {
         return service.patchItem(userId, itemId, itemDto);
     }
 
     //    Редактирование вещи. Эндпойнт PATCH /items/{itemId}.
 //    Изменить можно название, описание и статус доступа к аренде. Редактировать вещь может только её владелец.
     @PostMapping("/{itemId}/comment")
-    public CommentDto postComment(@RequestHeader(headerUserId) long userId, @PathVariable long itemId,
-                                  @Validated({Create.class}) @RequestBody CommentDto commentDto) throws BadRequestException {
+    public CommentDtoOut postComment(@RequestHeader(headerUserId) long userId, @PathVariable long itemId,
+                                     @Validated({Create.class}) @RequestBody CommentDtoIn commentDto)   {
         return service.postComment(userId, itemId, commentDto);
     }
 //    Редактирование вещи. Эндпойнт PATCH /items/{itemId}.
