@@ -5,13 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.item.model.Comment;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     boolean existsById(Long id);
 
-    List<Comment> findAllByItem_Id(Long itemId, Sort sort);
-
-    //    ArrayList<Comment> findAllByItem_Id(Long itemId, Sort sort);
-    List<Comment> findAllByItem_IdIn(List<Long> itemId, Sort sort);
+    List<Comment> findAllByItem_IdIn(Set<Long> itemId, Sort sort);
 }

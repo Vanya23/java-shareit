@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.*;
-import ru.practicum.shareit.Create;
-
-import javax.validation.constraints.NotBlank;
 
 
 @NoArgsConstructor
@@ -13,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class CommentDtoOut {
     Long id; // уникальный идентификатор комментария;
-    @NotBlank(groups = {Create.class})
     String text; // текст комментария;
     String authorName; // имя автора;
     String created; // время создания;

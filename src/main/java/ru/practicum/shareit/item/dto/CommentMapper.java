@@ -16,23 +16,6 @@ import java.util.List;
 public class CommentMapper {
     BookingPatternTime bookingPatternTime;
 
-    public CommentDtoIn fromCommentToCommentDtoIn(Comment comment) {
-        CommentDtoIn commentDto = new CommentDtoIn(comment.getId(), comment.getText(),
-                comment.getAuthor().getName(),
-
-                comment.getCreated()
-        );
-        return commentDto;
-    }
-
-    public List<CommentDtoIn> fromListCommentToCommentDtoIn(List<Comment> comments) {
-        List<CommentDtoIn> commentDtoList = new ArrayList<>();
-        for (Comment comment :
-                comments) {
-            commentDtoList.add(fromCommentToCommentDtoIn(comment));
-        }
-        return commentDtoList;
-    }
 
     public Comment fromCommentDtoInToComment(CommentDtoIn commentDto) {
         Comment comment = new Comment();

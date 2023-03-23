@@ -60,20 +60,20 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setId(itemId);
         // Передается ItemDto т.к. по условие на update может приходить не полный объект,
         // а объект Item не должен содержать нулевые значения
-        Item temp = repository.getReferenceById(itemDto.getId());
-        if (!(temp.getOwner().getId().equals(userId)))
+        Item itemForPatch = repository.getReferenceById(itemDto.getId());
+        if (!(itemForPatch.getOwner().getId().equals(userId)))
             throw new NotFoundException("ItemServiceImpl -> patchItem -> OtherOwnerItemException");
 
         if (Strings.isNotBlank(itemDto.getName())) {
-            temp.setName(itemDto.getName());
+            itemForPatch.setName(itemDto.getName());
         }
         if (Strings.isNotBlank(itemDto.getDescription())) {
-            temp.setDescription(itemDto.getDescription());
+            itemForPatch.setDescription(itemDto.getDescription());
         }
         if (itemDto.getAvailable() != null) {
-            temp.setAvailable(itemDto.getAvailable());
+            itemForPatch.setAvailable(itemDto.getAvailable());
         }
-        return itemMapper.fromItemToItemDtoOut(repository.getReferenceById(itemDto.getId()));
+        return itemMapper.fromItemToItemDtoOut(itemForPatch);
     }
 
     @Override
@@ -108,9 +108,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoOut> searchItemByText(String textForFind) {
-        List<Item> ans;
-        if (textForFind.equals("")) ans = new ArrayList<>();
-        else ans = repository.searchItemByText(textForFind);
+        List<Item> ans = repository.searchItemByText(textForFind);
         return itemMapper.fromListItemToListItemDtoOut(ans);
     }
 
@@ -141,35 +139,23 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void addBookingTime(List<Item> items, LocalDateTime callTime) {
-        // создание мапы booking
-        Map<Long, List<Booking>> mapLastBookings = new HashMap<>();
-        Map<Long, List<Booking>> mapNextBookings = new HashMap<>();
+        // создание мапы items
+        Map<Long, Item> mapItems = new HashMap<>();
         for (Item item :
                 items) {
-            mapLastBookings.put(item.getId(), new ArrayList<>());
-            mapNextBookings.put(item.getId(), new ArrayList<>());
+            mapItems.put(item.getId(), item);
         }
-        List<Booking> allLastBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartBefore(
-                new ArrayList<>(mapLastBookings.keySet()), BookingStatus.APPROVED, callTime, sortEndDesc);
-        List<Booking> allNextBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartAfter(
-                new ArrayList<>(mapNextBookings.keySet()), BookingStatus.APPROVED, callTime, sortStartAsc);
+
+        List<Booking> allLastBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartLessThanEqual(
+                mapItems.keySet(), BookingStatus.APPROVED, callTime);
+        List<Booking> allNextBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartGreaterThanEqual(
+                mapItems.keySet(), BookingStatus.APPROVED, callTime);
         // заполение мапы букингами
         for (Booking booking : allLastBookings) {
-            mapLastBookings.get(booking.getItem().getId()).add(booking);
+            mapItems.get(booking.getItem().getId()).setLastBooking(booking);
         }
         for (Booking booking : allNextBookings) {
-            mapNextBookings.get(booking.getItem().getId()).add(booking);
-        }
-
-
-        for (Item item :
-                items) {
-            List<Booking> lastBookings = mapLastBookings.get(item.getId());
-            List<Booking> nextBookings = mapNextBookings.get(item.getId());
-            if (lastBookings != null && lastBookings.size() > 0)
-                item.setLastBooking(lastBookings.get(0));
-            if (nextBookings != null && nextBookings.size() > 0)
-                item.setNextBooking(nextBookings.get(0));
+            mapItems.get(booking.getItem().getId()).setNextBooking(booking);
         }
     }
 
@@ -182,7 +168,7 @@ public class ItemServiceImpl implements ItemService {
             mapComments.put(item.getId(), new ArrayList<>());
         }
         // получение комментариев для списка item
-        List<Comment> allComments = commentRepository.findAllByItem_IdIn(new ArrayList<>(mapComments.keySet()), sortIdDesc);
+        List<Comment> allComments = commentRepository.findAllByItem_IdIn(mapComments.keySet(), sortIdDesc);
 // заполение мапы комментариями
         for (Comment comment : allComments) {
             mapComments.get(comment.getItem().getId()).add(comment);

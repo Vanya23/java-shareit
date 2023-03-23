@@ -50,7 +50,7 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Unknown state: UNSUPPORTED_STATUS");
         }
         if (!userRepository.existsById(userId)) throw new NotFoundException(getClass() + " user Not Found");
-        List<Booking> ans = null;
+        List<Booking> ans = List.of();
         User booker = userRepository.getReferenceById(userId);
         switch (bookingState) {
             case ALL:
@@ -82,10 +82,10 @@ public class BookingServiceImpl implements BookingService {
         try {
             bookingState = BookingState.valueOf(state);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Unknown state: UNSUPPORTED_STATUS");//********** this
+            throw new RuntimeException("Unknown state: UNSUPPORTED_STATUS");
         }
         if (!userRepository.existsById(userId)) throw new NotFoundException(getClass() + " user Not Found");
-        List<Booking> ans = null;
+        List<Booking> ans = List.of();
         List<Item> items = itemRepository.findAllByOwner(userRepository.getReferenceById(userId),
                 sortIdDesc);
 
@@ -112,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDtoOutput getBookingById(long bookingId, long userId) throws NotFoundException {
+    public BookingDtoOutput getBookingById(long bookingId, long userId) {
         if (!repository.existsById(bookingId)) throw new NotFoundException(getClass() + " getBookingById");
         Booking booking = repository.getReferenceById(bookingId);
         // проверка прав доступа
@@ -125,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoOutput addBooking(long userId, BookingDtoInput bookingDto) throws BadRequestException, NotFoundException {
+    public BookingDtoOutput addBooking(long userId, BookingDtoInput bookingDto) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку остановки до этого момента
         // проверка id пользователя и id item
         if (!(userRepository.existsUserById(userId) && itemRepository.existsById(bookingDto.getItemId())))
@@ -139,13 +139,12 @@ public class BookingServiceImpl implements BookingService {
         if (!booking.getItem().getAvailable())
             throw new BadRequestException(getClass() + "addBooking -> item not available");
         booking = repository.save(booking);
-//        booking = repository.getReferenceById(booking.getId());
         return bookingMapper.fromBookingToBookingDtoOutput(booking);
     }
 
     @Override
     @Transactional
-    public BookingDtoOutput patchBooking(long bookingId, long userId, Boolean approved) throws NotFoundException, BadRequestException {
+    public BookingDtoOutput patchBooking(long bookingId, long userId, Boolean approved) {
         User owner = userRepository.getReferenceById(userId);
         Booking booking = repository.getReferenceById(bookingId);
         if (booking.getStatus().equals(BookingStatus.APPROVED))
@@ -154,11 +153,10 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("inside patchBooking wrong owner");
         if (approved) booking.setStatus(BookingStatus.APPROVED);
         else booking.setStatus(BookingStatus.REJECTED);
-//        booking = repository.saveAndFlush(booking);
         return bookingMapper.fromBookingToBookingDtoOutput(booking);
     }
 
-    private void validateTime(Booking booking, LocalDateTime callTime) throws BadRequestException {
+    private void validateTime(Booking booking, LocalDateTime callTime) {
 
         if (booking.getStart().equals(booking.getEnd())) throw new BadRequestException(getClass() + "time equals");
         if (booking.getStart().isBefore(callTime)) throw new BadRequestException(getClass() + "not validateTime");

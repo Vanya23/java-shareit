@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
@@ -35,8 +36,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDtoOut> searchItemByText(@RequestParam String text) {
+        if (Strings.isBlank(text)) return List.of(); // если запрос пустой
         return service.searchItemByText(text);
-
     }
 
 //    Поиск вещи потенциальным арендатором. Пользователь передаёт в строке запроса текст, и система ищет вещи,

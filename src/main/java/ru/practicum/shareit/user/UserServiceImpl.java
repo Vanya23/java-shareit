@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -26,11 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(long userId) {
-        try {
             return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
-        } catch (EntityNotFoundException e) {
-            throw new NotFoundException("NotFoundException in UserService.getUserById()");
-        }
     }
 
     @Override
@@ -51,14 +45,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto patchUser(long userId, UserDto userDto) {
         userDto.setId(userId);
-        User temp = repository.getReferenceById(userDto.getId());
+        User userForPatch = repository.getReferenceById(userDto.getId());
         if (Strings.isNotBlank(userDto.getName())) {
-            temp.setName(userDto.getName());
+            userForPatch.setName(userDto.getName());
         }
         if (Strings.isNotBlank(userDto.getEmail())) {
-            temp.setEmail(userDto.getEmail());
+            userForPatch.setEmail(userDto.getEmail());
         }
-        return userMapper.fromUserToUserDto(repository.getReferenceById(userDto.getId()));
+        return userMapper.fromUserToUserDto(userForPatch);
     }
 
 

@@ -10,6 +10,8 @@ import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.InternalServerErrorException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 
+import javax.persistence.EntityNotFoundException;
+
 
 @RestControllerAdvice
 @Slf4j
@@ -32,19 +34,26 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(final NotFoundException e) {
-        log.warn("Ошибка {}", e.getMessage(), e);
-        return new ErrorResponse(String.format(myTextError, e.getMessage()));
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
     public ErrorResponse handleIMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.warn("Ошибка {}", e.getMessage(), e);
         return new ErrorResponse(
                 String.format(myTextError, e.getMessage())
         );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND) // 404
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+        log.warn("Ошибка {}", e.getMessage(), e);
+        return new ErrorResponse(String.format(myTextError, e.getMessage()));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND) // 404
+    public ErrorResponse handleEntityNotFoundException(final EntityNotFoundException e) {
+        log.warn("Ошибка {}", e.getMessage(), e);
+        return new ErrorResponse(String.format(myTextError, e.getMessage()));
     }
 
     @ExceptionHandler
