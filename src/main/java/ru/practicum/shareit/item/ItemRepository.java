@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
@@ -18,6 +17,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " where (lower(description) LIKE lower(concat('%', ?1, '%')) or lower(full_name) LIKE lower(concat('%', ?1, '%')))" +
             "and available = true " +
             " order by id;", nativeQuery = true)
-    ArrayList<Item> searchItemByText(String textForFind);
+    List<Item> searchItemByText(String textForFind);
+
 
 }

@@ -147,14 +147,21 @@ public class ItemServiceImpl implements ItemService {
         }
 
         List<Booking> allLastBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartLessThanEqual(
-                mapItems.keySet(), BookingStatus.APPROVED, callTime);
-        List<Booking> allNextBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartGreaterThanEqual(
-                mapItems.keySet(), BookingStatus.APPROVED, callTime);
+                mapItems.keySet(), BookingStatus.APPROVED, callTime, sortEndDesc);
+        List<Booking> allNextBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartAfter(
+                mapItems.keySet(), BookingStatus.APPROVED, callTime, sortStartAsc);
         // заполение мапы букингами
         for (Booking booking : allLastBookings) {
-            mapItems.get(booking.getItem().getId()).setLastBooking(booking);
+            long itemId = booking.getItem().getId();
+            if (mapItems.get(itemId).getLastBooking() != null) continue;
+            // т.к. нужный вариант для каждого Item будет первым, то после присвоения, новые значения не присваиваются
+            mapItems.get(itemId).setLastBooking(booking);
+
         }
         for (Booking booking : allNextBookings) {
+            long itemId = booking.getItem().getId();
+            if (mapItems.get(itemId).getNextBooking() != null) continue;
+            // т.к. нужный вариант для каждого Item будет первым, то после присвоения, новые значения не присваиваются
             mapItems.get(booking.getItem().getId()).setNextBooking(booking);
         }
     }
