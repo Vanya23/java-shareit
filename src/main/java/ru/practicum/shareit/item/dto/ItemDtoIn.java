@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDto {
+public class ItemDtoIn {
     Long id; // уникальный идентификатор вещи;
     @NotBlank(groups = {Create.class})
     String name; // краткое название;
@@ -21,7 +21,4 @@ public class ItemDto {
     String description; // развёрнутое описание;
     @NotNull(groups = {Create.class})
     Boolean available; // статус о том, доступна или нет вещь для аренды;
-    Long request; // если вещь была создана по запросу другого пользователя, то в этом
-
-//    поле будет храниться ссылка на соответствующий запрос.
 }

@@ -1,20 +1,23 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.error.exception.IncorrectItemException;
-import ru.practicum.shareit.error.exception.OtherOwnerItemException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-public interface ItemRepository {
-    Item addItem(Item item);
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    List<Item> findAllByOwner(User id, Sort sort);
 
-    Item patchItem(ItemDto itemDto, long userId) throws IncorrectItemException, OtherOwnerItemException;
+    boolean existsById(Long id);
 
-    Item getItemById(long itemId) throws IncorrectItemException;
+    @Query(value = "select * from items " +
+            " where (lower(description) LIKE lower(concat('%', ?1, '%')) or lower(full_name) LIKE lower(concat('%', ?1, '%')))" +
+            "and available = true " +
+            " order by id;", nativeQuery = true)
+    List<Item> searchItemByText(String textForFind);
 
-    List<Item> getAllItemByUserId(long userId);
 
-    List<Item> getAllItems();
 }

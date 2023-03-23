@@ -1,58 +1,58 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.error.exception.DuplicateEmailException;
-import ru.practicum.shareit.error.exception.EmptyEmailException;
-import ru.practicum.shareit.error.exception.IncorrectEmailException;
-import ru.practicum.shareit.error.exception.IncorrectIdUser;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
-    private final CheckEmailService checkEmailService;
     private final UserMapper userMapper;
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userMapper.fromListUserToListUserDto(repository.getAllUsers());
+        return userMapper.fromListUserToListUserDto(repository.findAll());
     }
 
     @Override
-    public UserDto getUserById(long userId) throws IncorrectIdUser {
-        return userMapper.fromUserToUserDto(repository.getUserById(userId));
+    public UserDto getUserById(long userId) {
+            return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
     }
 
     @Override
-    public UserDto addUser(UserDto userDto) throws DuplicateEmailException {
+    @Transactional
+    public UserDto addUser(UserDto userDto) {
         // На соответствие почты и null проверка объекта не выполняется т.к. сделана в @Validated
-        if (!checkEmailService.checkDuplicateEmail(userDto, repository.getAllUsers()))
-            throw new DuplicateEmailException("DuplicateEmailException");
-        return userMapper.fromUserToUserDto(repository.addUser(userMapper.fromUserDtoToUser(userDto)));
+        // по условию задачи проверка уникальности почты выполняется в БД
+        return userMapper.fromUserToUserDto(repository.save(userMapper.fromUserDtoToUser(userDto)));
     }
 
     @Override
+    @Transactional
     public void deleteUser(long userId) {
-        repository.deleteUser(userId);
+        repository.deleteById(userId);
     }
 
     @Override
-    public UserDto patchUser(long userId, UserDto userDto) throws IncorrectEmailException, EmptyEmailException, DuplicateEmailException, IncorrectIdUser {
+    @Transactional
+    public UserDto patchUser(long userId, UserDto userDto) {
         userDto.setId(userId);
-        if (userDto.getEmail() != null) checkEmailService.checkAllEmail(userDto, repository.getAllUsers());
-        User temp = repository.getUserById(userDto.getId());
-        if (userDto.getName() != null) {
-            temp.setName(userDto.getName());
+        User userForPatch = repository.getReferenceById(userDto.getId());
+        if (Strings.isNotBlank(userDto.getName())) {
+            userForPatch.setName(userDto.getName());
         }
-        if (userDto.getEmail() != null) {
-            temp.setEmail(userDto.getEmail());
+        if (Strings.isNotBlank(userDto.getEmail())) {
+            userForPatch.setEmail(userDto.getEmail());
         }
-        return userMapper.fromUserToUserDto(temp);
+        return userMapper.fromUserToUserDto(userForPatch);
     }
 
 

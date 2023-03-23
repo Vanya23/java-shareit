@@ -1,21 +1,22 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.error.exception.IncorrectIdUser;
-import ru.practicum.shareit.error.exception.IncorrectIdUserInClassItem;
-import ru.practicum.shareit.error.exception.IncorrectItemException;
-import ru.practicum.shareit.error.exception.OtherOwnerItemException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.CommentDtoIn;
+import ru.practicum.shareit.item.dto.CommentDtoOut;
+import ru.practicum.shareit.item.dto.ItemDtoIn;
+import ru.practicum.shareit.item.dto.ItemDtoOut;
 
 import java.util.List;
 
 public interface ItemService {
-    ItemDto addItem(long userId, ItemDto itemDto) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem;
+    ItemDtoOut addItem(long userId, ItemDtoIn itemDto);
 
-    ItemDto patchItem(long userId, long itemId, ItemDto itemDto) throws IncorrectIdUser, IncorrectItemException, IncorrectIdUserInClassItem, OtherOwnerItemException;
+    ItemDtoOut patchItem(long userId, long itemId, ItemDtoIn itemDto);
 
-    ItemDto getItemById(long itemId) throws IncorrectItemException;
+    ItemDtoOut getItemById(long itemId, long userId);
 
-    List<ItemDto> getAllItemByUserId(long userId) throws IncorrectIdUserInClassItem;
+    List<ItemDtoOut> getAllItemByUserId(long userId);
 
-    List<ItemDto> searchItemByText(String text);
+    List<ItemDtoOut> searchItemByText(String text);
+
+    CommentDtoOut postComment(long userId, long itemId, CommentDtoIn commentDto);
 }
