@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class MyServicePage {
 
     public Pageable checkAndCreatePageable(String from, String size, Sort sort) {
-        int fromNum = Integer.valueOf(from);
-        int sizeNum = Integer.valueOf(size);
+        int fromNum = Integer.parseInt(from);
+        int sizeNum = Integer.parseInt(size);
         if (fromNum < 0 || sizeNum <= 0) throw new RuntimeException("");
 
         Pageable pageable = PageRequest.of(fromNum, sizeNum, sort);
