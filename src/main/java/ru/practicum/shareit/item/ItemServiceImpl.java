@@ -4,9 +4,13 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.MyServicePage;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingPatternTime;
@@ -16,6 +20,7 @@ import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
@@ -34,9 +39,12 @@ public class ItemServiceImpl implements ItemService {
     UserRepository userRepository;
     BookingRepository bookingRepository;
     CommentRepository commentRepository;
-    ItemMapper itemMapper;
+    ItemRequestRepository itemRequestRepository;
+    ItemMapper mapper;
     CommentMapper commentMapper;
     BookingPatternTime bookingPatternTime;
+
+    MyServicePage myServicePage;
     Sort sortEndDesc = Sort.by(Sort.Direction.DESC, "end");
     Sort sortStartAsc = Sort.by(Sort.Direction.ASC, "start");
     Sort sortIdDesc = Sort.by(Sort.Direction.ASC, "id");
@@ -46,10 +54,10 @@ public class ItemServiceImpl implements ItemService {
     public ItemDtoOut addItem(long userId, ItemDtoIn itemDto) {
         checkUserIdInItem(userId); // проверка существует ли user по id на исключение
         // Проверка объекта не выполняется т.к. сделана в @Validated
-        Item item = itemMapper.fromItemDtoInToItem(itemDto, userId, userRepository);
+        Item item = mapper.fromItemDtoInToItem(itemDto, userId, userRepository, itemRequestRepository);
         checkUserIdInItem(userId); // чтобы не прокручивался счетчик в бд
         item = repository.save(item);
-        return itemMapper.fromItemToItemDtoOut(item);
+        return mapper.fromItemToItemDtoOut(item);
 //        return itemMapper.fromItemToItemDto(repository.save(itemMapper.fromItemDtoToItem(itemDto, userId, userRepository)));
     }
 
@@ -73,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) {
             itemForPatch.setAvailable(itemDto.getAvailable());
         }
-        return itemMapper.fromItemToItemDtoOut(itemForPatch);
+        return mapper.fromItemToItemDtoOut(itemForPatch);
     }
 
     @Override
@@ -91,25 +99,61 @@ public class ItemServiceImpl implements ItemService {
         }
         // добавление комментария
         addComment(items);
-        return itemMapper.fromItemToItemDtoOut(items.get(0));
+        return mapper.fromItemToItemDtoOut(items.get(0));
     }
 
     @Override
     public List<ItemDtoOut> getAllItemByUserId(long userId) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         checkUserIdInItem(userId); // проверка существует ли user по id на исключение
-        List<Item> items = repository.findAllByOwner(userRepository.getReferenceById(userId),
+        List<Item> items = repository.findAllByOwner_Id(userId,
                 sortIdDesc);
         addBookingTime(items, callTime); // добавление времени
         // добавление комментария
         addComment(items);
-        return itemMapper.fromListItemToListItemDtoOut(items);
+        return mapper.fromListItemToListItemDtoOut(items);
+    }
+
+    @Override
+    public Page<ItemDtoOut> getAllItemByUserIdPage(long userId, String from, String size) {
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
+        checkUserIdInItem(userId); // проверка существует ли user по id на исключение
+
+        Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortIdDesc);
+
+        Page<Item> page = repository.findAllByOwner_Id(userId, pageable);
+
+        return helpPage(page, pageable, callTime);
     }
 
     @Override
     public List<ItemDtoOut> searchItemByText(String textForFind) {
-        List<Item> ans = repository.searchItemByText(textForFind);
-        return itemMapper.fromListItemToListItemDtoOut(ans);
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
+        List<Item> items = repository.searchItemByText(textForFind);
+        addBookingTime(items, callTime); // добавление времени
+        // добавление комментария
+        addComment(items);
+        return mapper.fromListItemToListItemDtoOut(items);
+    }
+
+
+    @Override
+    public Page<ItemDtoOut> searchItemByTextPage(String text, String from, String size) {
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
+        Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortIdDesc);
+        Page<Item> page = repository.searchItemByTextPage(text, pageable);
+        return helpPage(page, pageable, callTime);
+    }
+
+    private Page<ItemDtoOut> helpPage(Page<Item> page, Pageable pageable, LocalDateTime callTime) {
+        List<Item> items = page.getContent();
+        addBookingTime(items, callTime); // добавление времени
+        // добавление комментария
+        addComment(items);
+        // page mapping
+        List<ItemDtoOut> itemDtoOuts = mapper.fromListItemToListItemDtoOut(items);
+        Page<ItemDtoOut> pageOut = new PageImpl<>(itemDtoOuts, pageable, page.getTotalElements());
+        return pageOut;
     }
 
     @Override
@@ -132,6 +176,7 @@ public class ItemServiceImpl implements ItemService {
         comment = commentRepository.save(comment);
         return commentMapper.fromCommentToCommentDtoOut(comment);
     }
+
 
     private void checkUserIdInItem(long userId) {
         if (!userRepository.existsUserById(userId))

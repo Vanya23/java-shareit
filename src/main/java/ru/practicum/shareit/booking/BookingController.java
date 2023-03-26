@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
@@ -18,6 +19,7 @@ public class BookingController {
     private final String headerUserId = "X-Sharer-User-Id";
 
 
+
 //    Получение списка всех бронирований текущего пользователя. Эндпоинт — GET /bookings?state={state}.
 //    Параметр state необязательный и по умолчанию равен ALL (англ. «все»). Также он может принимать значения CURRENT
 //    (англ. «текущие»), **PAST** (англ. «завершённые»), FUTURE (англ. «будущие»), WAITING (англ. «ожидающие
@@ -31,13 +33,29 @@ public class BookingController {
         return service.getAllBookingsByUserId(userId, state);
     }
 
+    @GetMapping(params = {"from", "size"})
+    public Page<BookingDtoOutput> getAllBookingsByUserIdPage(@RequestHeader(headerUserId) long userId,
+                                                             @RequestParam(defaultValue = "ALL") String state,
+                                                             @RequestParam(defaultValue = "") String from,
+                                                             @RequestParam(defaultValue = "") String size) {
+        return service.getAllBookingsByUserIdPage(userId, state, from, size);
+    }
+
     //    Получение списка бронирований для всех вещей текущего пользователя. Эндпоинт —
 //    GET /bookings/owner?state={state}. Этот запрос имеет смысл для владельца хотя бы
 //    одной вещи. Работа параметра state аналогична его работе в предыдущем сценарии.
-    @GetMapping("/owner")
+    @GetMapping(value = "/owner")
     public List<BookingDtoOutput> getAllBookingsByOwner(@RequestHeader(headerUserId) long userId,
                                                         @RequestParam(defaultValue = "ALL") String state) {
         return service.getAllBookingsByOwner(userId, state);
+    }
+
+    @GetMapping(value = "/owner", params = {"from", "size"})
+    public Page<BookingDtoOutput> getAllBookingsByOwnerPage(@RequestHeader(headerUserId) long userId,
+                                                            @RequestParam(defaultValue = "ALL") String state,
+                                                            @RequestParam String from,
+                                                            @RequestParam String size) {
+        return service.getAllBookingsByOwnerPage(userId, state, from, size);
     }
 
     //    Получение данных о конкретном бронировании (включая его статус). Может быть выполнено либо автором бронирования,

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDtoOutputForItem;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.ArrayList;
@@ -19,28 +20,23 @@ public class ItemMapper {
     CommentMapper commentMapper;
 
     public ItemDtoIn fromItemToItemDtoIn(Item item) {
-        ItemDtoIn itemDto = new ItemDtoIn(item.getId(), item.getName(), item.getDescription(), item.getAvailable()
+        ItemDtoIn itemDto = new ItemDtoIn(
+                item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+                item.getRequest() != null ? item.getRequest().getId() : null
         );
         return itemDto;
     }
 
-    public List<ItemDtoIn> fromListItemToListItemDtoIn(List<Item> items) {
-        List<ItemDtoIn> itemDtoList = new ArrayList<>();
-        for (Item item :
-                items) {
-            itemDtoList.add(fromItemToItemDtoIn(item));
-        }
-        return itemDtoList;
-    }
 
-
-    public Item fromItemDtoInToItem(ItemDtoIn itemDto, long userId, UserRepository userRepository) {
+    public Item fromItemDtoInToItem(ItemDtoIn itemDto, long userId, UserRepository userRepository,
+                                    ItemRequestRepository itemRequestRepository) {
         Item item = new Item(itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
                 userRepository.getReferenceById(userId),
-                null, null, null, null);
+                itemDto.getRequestId() != null ? itemRequestRepository.getReferenceById(itemDto.getRequestId()) : null,
+                null, null, null);
         return item;
     }
 
@@ -74,6 +70,26 @@ public class ItemMapper {
                 booking.getStatus().name()
         );
 
+    }
+
+    public ItemDtoOutForItemRequest fromItemToItemDtoOutForItemRequest(Item item) {
+        ItemDtoOutForItemRequest itemDto = new ItemDtoOutForItemRequest(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getRequest().getId()
+        );
+        return itemDto;
+    }
+
+    public List<ItemDtoOutForItemRequest> fromListItemToListDtoOutForItemRequest(List<Item> items) {
+        List<ItemDtoOutForItemRequest> itemDtoList = new ArrayList<>();
+        for (Item item :
+                items) {
+            itemDtoList.add(fromItemToItemDtoOutForItemRequest(item));
+        }
+        return itemDtoList;
     }
 
 

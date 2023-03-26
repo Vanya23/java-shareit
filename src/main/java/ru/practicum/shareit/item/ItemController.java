@@ -2,9 +2,12 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
+import ru.practicum.shareit.MyServicePage;
 import ru.practicum.shareit.Update;
 import ru.practicum.shareit.item.dto.CommentDtoIn;
 import ru.practicum.shareit.item.dto.CommentDtoOut;
@@ -18,11 +21,20 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService service;
+    private final MyServicePage myServicePage;
     private final String headerUserId = "X-Sharer-User-Id";
+
 
     @GetMapping
     public List<ItemDtoOut> getAllItemByUserId(@RequestHeader(headerUserId) long userId) {
         return service.getAllItemByUserId(userId);
+    }
+
+    @GetMapping(params = {"from", "size"})
+    public Page<ItemDtoOut> getAllItemByUserIdPage(@RequestHeader(headerUserId) long userId,
+                                                   @RequestParam String from,
+                                                   @RequestParam String size) {
+        return service.getAllItemByUserIdPage(userId, from, size);
     }
 
     //    Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой. Эндпойнт
@@ -38,6 +50,15 @@ public class ItemController {
     public List<ItemDtoOut> searchItemByText(@RequestParam String text) {
         if (Strings.isBlank(text)) return List.of(); // если запрос пустой
         return service.searchItemByText(text);
+    }
+
+    @GetMapping(value = "/search", params = {"from", "size"})
+    public Page<ItemDtoOut> searchItemByTextPage(@RequestParam String text,
+                                                 @RequestParam String from,
+                                                 @RequestParam String size) {
+        if (Strings.isBlank(text))
+            return new PageImpl<>(List.of(), myServicePage.getPageableBlank(), 0); // если запрос пустой
+        return service.searchItemByTextPage(text, from, size);
     }
 
 //    Поиск вещи потенциальным арендатором. Пользователь передаёт в строке запроса текст, и система ищет вещи,
