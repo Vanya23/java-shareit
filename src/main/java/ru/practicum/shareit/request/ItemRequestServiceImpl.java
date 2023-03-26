@@ -61,8 +61,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             long itemReqId = itemRequestDtoOut.getId();
             if (map.containsKey(itemReqId))
                 itemRequestDtoOut.setItems(
-                        itemMapper.
-                                fromListItemToListDtoOutForItemRequest(map.get(itemReqId)));
+                        itemMapper.fromListItemToListDtoOutForItemRequest(map.get(itemReqId)));
         }
 
         return itemRequestsList;

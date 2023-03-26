@@ -20,8 +20,8 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDtoOut addItemRequest(@RequestHeader(headerUserId) long userId,
-                                            @Validated({Create.class}) @RequestBody ItemRequestDtoIn ItemRequestDtoIn) {
-        return service.addItemRequest(userId, ItemRequestDtoIn);
+                                            @Validated({Create.class}) @RequestBody ItemRequestDtoIn itemRequestDtoIn) {
+        return service.addItemRequest(userId, itemRequestDtoIn);
     }
 
     //    добавить новый запрос вещи. Основная часть запроса — текст запроса, где пользователь описывает,
