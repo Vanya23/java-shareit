@@ -69,6 +69,7 @@ public class ItemServiceImpl implements ItemService {
         // Передается ItemDto т.к. по условие на update может приходить не полный объект,
         // а объект Item не должен содержать нулевые значения
         Item itemForPatch = repository.getReferenceById(itemDto.getId());
+
         if (!(itemForPatch.getOwner().getId().equals(userId)))
             throw new NotFoundException("ItemServiceImpl -> patchItem -> OtherOwnerItemException");
 
@@ -192,7 +193,7 @@ public class ItemServiceImpl implements ItemService {
                 items) {
             mapItems.put(item.getId(), item);
         }
-
+        List<Booking> allLastBookings12 = bookingRepository.findAll();
         List<Booking> allLastBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartLessThanEqual(
                 mapItems.keySet(), BookingStatus.APPROVED, callTime, sortEndDesc);
         List<Booking> allNextBookings = bookingRepository.findAllByItem_IdInAndStatusAndStartAfter(

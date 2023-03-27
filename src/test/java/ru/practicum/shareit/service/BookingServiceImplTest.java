@@ -26,6 +26,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -270,7 +271,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void bigTest() {
+    void bigTest() throws InterruptedException {
         ItemDtoIn itemDto = makeItemDtoIn("отвертка", "дрель", Boolean.TRUE);
         testUserId1 = getTestUserId();   // владелец
         ItemDtoOut out = itemService.addItem(testUserId1, itemDto);
@@ -282,6 +283,8 @@ class BookingServiceImplTest {
                 LocalDateTime.now().plusNanos(2), testItemId1);
         BookingDtoOut outB = service.addBooking(testUserId2, bookingDto);
         outB = service.patchBooking(outB.getId(), testUserId1, Boolean.TRUE);
+
+        TimeUnit.SECONDS.sleep(1);
 
         // будущее approved
         bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(1),
@@ -412,7 +415,8 @@ class BookingServiceImplTest {
         });
 
 
-
+        ItemDtoOut out100 = itemService.getItemById(testItemId1, testUserId1);
+        assertThat(out100, notNullValue());
     }
 
 

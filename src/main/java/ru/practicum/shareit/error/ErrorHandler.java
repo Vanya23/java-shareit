@@ -18,8 +18,6 @@ public class ErrorHandler {
     private final String myTextError = "%s";
 
 
-
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
     public ErrorResponse handleBadRequestException(final BadRequestException e) {
@@ -29,7 +27,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
-    public ErrorResponse handleIMethodArgumentNotValidException(final MethodArgumentNotValidException  e) {
+    public ErrorResponse handleIMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.warn("Ошибка {}", e.getMessage(), e);
         return new ErrorResponse(
                 String.format(myTextError, e.getMessage())
