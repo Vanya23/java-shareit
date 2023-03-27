@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
@@ -51,7 +50,7 @@ public class ItemRequestController {
     }
 
     @GetMapping(value = "/all", params = {"from", "size"})
-    public Page<ItemRequestDtoOut> getAllOtherUsersPage(@RequestHeader(headerUserId) long userId,
+    public List<ItemRequestDtoOut> getAllOtherUsersPage(@RequestHeader(headerUserId) long userId,
                                                         @RequestParam String from,
                                                         @RequestParam String size) {
         return service.getAllOtherUsersPage(userId, from, size);

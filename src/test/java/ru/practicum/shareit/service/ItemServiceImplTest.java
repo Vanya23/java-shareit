@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
@@ -133,8 +132,7 @@ class ItemServiceImplTest {
         testUserId1 = getTestUserId();
         ItemDtoOut out = service.addItem(testUserId1, itemDto);
 
-        Page<ItemDtoOut> pageOut = service.getAllItemByUserIdPage(testUserId1, "0", "100");
-        List<ItemDtoOut> listOut = pageOut.getContent();
+        List<ItemDtoOut> listOut = service.getAllItemByUserIdPage(testUserId1, "0", "100");
 
         assertThat(listOut.get(0).getId(), notNullValue());
         assertThat(listOut.get(0).getName(), equalTo(itemDto.getName()));
@@ -159,8 +157,7 @@ class ItemServiceImplTest {
         testUserId1 = getTestUserId();
         ItemDtoOut out = service.addItem(testUserId1, itemDto);
 
-        Page<ItemDtoOut> pageOut = service.searchItemByTextPage("отв", "0", "100");
-        List<ItemDtoOut> listOut = pageOut.getContent();
+        List<ItemDtoOut> listOut = service.searchItemByTextPage("отв", "0", "100");
         assertThat(listOut.get(0).getId(), notNullValue());
         assertThat(listOut.get(0).getName(), equalTo(itemDto.getName()));
         assertThat(listOut.get(0).getDescription(), equalTo(itemDto.getDescription()));

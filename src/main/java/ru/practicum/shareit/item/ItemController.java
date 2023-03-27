@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +13,7 @@ import ru.practicum.shareit.item.dto.CommentDtoOut;
 import ru.practicum.shareit.item.dto.ItemDtoIn;
 import ru.practicum.shareit.item.dto.ItemDtoOut;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,7 +31,7 @@ public class ItemController {
     }
 
     @GetMapping(params = {"from", "size"})
-    public Page<ItemDtoOut> getAllItemByUserIdPage(@RequestHeader(headerUserId) long userId,
+    public List<ItemDtoOut> getAllItemByUserIdPage(@RequestHeader(headerUserId) long userId,
                                                    @RequestParam String from,
                                                    @RequestParam String size) {
         return service.getAllItemByUserIdPage(userId, from, size);
@@ -53,11 +53,11 @@ public class ItemController {
     }
 
     @GetMapping(value = "/search", params = {"from", "size"})
-    public Page<ItemDtoOut> searchItemByTextPage(@RequestParam String text,
+    public List<ItemDtoOut> searchItemByTextPage(@RequestParam String text,
                                                  @RequestParam String from,
                                                  @RequestParam String size) {
         if (Strings.isBlank(text))
-            return new PageImpl<>(List.of(), myServicePage.getPageableBlank(), 0); // если запрос пустой
+            return (new PageImpl<>(new ArrayList<ItemDtoOut>(), myServicePage.getPageableBlank(), 0)).getContent(); // если запрос пустой
         return service.searchItemByTextPage(text, from, size);
     }
 

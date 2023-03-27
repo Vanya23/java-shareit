@@ -80,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<BookingDtoOut> getAllBookingsByUserIdPage(long userId, String state, String from, String size) {
+    public List<BookingDtoOut> getAllBookingsByUserIdPage(long userId, String state, String from, String size) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortEndDesc);
         Pageable pageableBlank = myServicePage.getPageableBlank();
@@ -114,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
 
         }
 
-        return helpPage(page, pageable);
+        return helpPage(page, pageable).getContent();
     }
 
     private Page<BookingDtoOut> helpPage(Page<Booking> page, Pageable pageable) {
@@ -161,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<BookingDtoOut> getAllBookingsByOwnerPage(long userId, String state, String from, String size) {
+    public List<BookingDtoOut> getAllBookingsByOwnerPage(long userId, String state, String from, String size) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortEndDesc);
         Pageable pageableBlank = myServicePage.getPageableBlank();
@@ -196,7 +196,7 @@ public class BookingServiceImpl implements BookingService {
                 page = repository.findAllByItemInAndStartAfter(items, callTime, pageable);
                 break;
         }
-        return helpPage(page, pageable);
+        return helpPage(page, pageable).getContent();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 
-import org.springframework.data.domain.Page;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 
@@ -19,7 +18,7 @@ public interface BookingService {
 
     BookingDtoOut patchBooking(long bookingId, long userId, Boolean approved);
 
-    Page<BookingDtoOut> getAllBookingsByUserIdPage(long userId, String state, String from, String size);
+    List<BookingDtoOut> getAllBookingsByUserIdPage(long userId, String state, String from, String size);
 
-    Page<BookingDtoOut> getAllBookingsByOwnerPage(long userId, String state, String from, String size);
+    List<BookingDtoOut> getAllBookingsByOwnerPage(long userId, String state, String from, String size);
 }

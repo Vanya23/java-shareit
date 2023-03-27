@@ -130,7 +130,7 @@ class ItemControllerTestWithContext {
         Pageable pageableBlank = PageRequest.of(0, 1, Sort.by(Sort.DEFAULT_DIRECTION, "id"));
         PageImpl<ItemDtoOut> ans = new PageImpl<>(itemDtoOuts, pageableBlank, 100);
         when(itemService.getAllItemByUserIdPage(anyInt(), any(), any()))
-                .thenReturn(ans);
+                .thenReturn(ans.getContent());
         mvc.perform(
                         get(basePath)
                                 .param("from", "0")
@@ -180,7 +180,7 @@ class ItemControllerTestWithContext {
         Pageable pageableBlank = PageRequest.of(0, 1, Sort.by(Sort.DEFAULT_DIRECTION, "id"));
         PageImpl<ItemDtoOut> ans = new PageImpl<>(itemDtoOuts, pageableBlank, 100);
         when(itemService.searchItemByTextPage(any(), any(), any()))
-                .thenReturn(ans);
+                .thenReturn(ans.getContent());
         mvc.perform(
                         get(basePath + "/search")
                                 .content(mapper.writeValueAsString(itemDtoOut))
@@ -198,7 +198,7 @@ class ItemControllerTestWithContext {
         Pageable pageableBlank = PageRequest.of(0, 1, Sort.by(Sort.DEFAULT_DIRECTION, "id"));
         PageImpl<ItemDtoOut> ans = new PageImpl<>(itemDtoOuts, pageableBlank, 100);
         when(itemService.searchItemByTextPage(any(), any(), any()))
-                .thenReturn(ans);
+                .thenReturn(ans.getContent());
         mvc.perform(
                         get(basePath + "/search")
                                 .content(mapper.writeValueAsString(itemDtoOut))

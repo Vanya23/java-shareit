@@ -121,7 +121,7 @@ class RequestItemControllerTestWithContext {
         Pageable pageableBlank = PageRequest.of(0, 1, Sort.by(Sort.DEFAULT_DIRECTION, "id"));
         PageImpl<ItemRequestDtoOut> ans = new PageImpl<>(itemRequestDtoOuts, pageableBlank, 100);
         when(service.getAllOtherUsersPage(anyInt(), any(), any()))
-                .thenReturn(ans);
+                .thenReturn(ans.getContent());
         mvc.perform(
                         get(basePath + "/all")
                                 .content(mapper.writeValueAsString(itemRequestDtoOut))

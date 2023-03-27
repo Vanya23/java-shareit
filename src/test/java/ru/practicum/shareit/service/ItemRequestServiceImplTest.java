@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
@@ -108,8 +107,7 @@ class ItemRequestServiceImplTest {
         itemRequestDtoIn.setDescription("нужна отвертка");
 
         ItemRequestDtoOut out = service.addItemRequest(testUserId2, itemRequestDtoIn);
-        Page<ItemRequestDtoOut> outPage = service.getAllOtherUsersPage(testUserId1, "0", "100");
-        List<ItemRequestDtoOut> outList = outPage.getContent();
+        List<ItemRequestDtoOut> outList = service.getAllOtherUsersPage(testUserId1, "0", "100");
 
         assertThat(outList.get(0).getId(), notNullValue());
         assertThat(outList.get(0).getDescription(), equalTo(itemRequestDtoIn.getDescription()));

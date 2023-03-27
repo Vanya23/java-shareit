@@ -86,7 +86,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public Page<ItemRequestDtoOut> getAllOtherUsersPage(long userId, String from, String size) {
+    public List<ItemRequestDtoOut> getAllOtherUsersPage(long userId, String from, String size) {
         checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
 
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortCreatedDesc);
@@ -97,7 +97,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequestDtoOut> itemRequestDtoOuts = mapper.fromListItemRequestToListItemRequestDtoOut(page.getContent());
         Page<ItemRequestDtoOut> pageOut = new PageImpl<>(itemRequestDtoOuts, pageable, page.getTotalElements());
 
-        return pageOut;
+        return pageOut.getContent();
     }
 
     @Override

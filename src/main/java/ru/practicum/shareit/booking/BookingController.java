@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
@@ -33,7 +32,7 @@ public class BookingController {
     }
 
     @GetMapping(params = {"from", "size"})
-    public Page<BookingDtoOut> getAllBookingsByUserIdPage(@RequestHeader(headerUserId) long userId,
+    public List<BookingDtoOut> getAllBookingsByUserIdPage(@RequestHeader(headerUserId) long userId,
                                                           @RequestParam(defaultValue = "ALL") String state,
                                                           @RequestParam(defaultValue = "") String from,
                                                           @RequestParam(defaultValue = "") String size) {
@@ -50,7 +49,7 @@ public class BookingController {
     }
 
     @GetMapping(value = "/owner", params = {"from", "size"})
-    public Page<BookingDtoOut> getAllBookingsByOwnerPage(@RequestHeader(headerUserId) long userId,
+    public List<BookingDtoOut> getAllBookingsByOwnerPage(@RequestHeader(headerUserId) long userId,
                                                          @RequestParam(defaultValue = "ALL") String state,
                                                          @RequestParam String from,
                                                          @RequestParam String size) {

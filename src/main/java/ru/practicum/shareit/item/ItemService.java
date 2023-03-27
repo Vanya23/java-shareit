@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.data.domain.Page;
 import ru.practicum.shareit.item.dto.CommentDtoIn;
 import ru.practicum.shareit.item.dto.CommentDtoOut;
 import ru.practicum.shareit.item.dto.ItemDtoIn;
@@ -21,7 +20,7 @@ public interface ItemService {
 
     CommentDtoOut postComment(long userId, long itemId, CommentDtoIn commentDto);
 
-    Page<ItemDtoOut> getAllItemByUserIdPage(long userId, String from, String size);
+    List<ItemDtoOut> getAllItemByUserIdPage(long userId, String from, String size);
 
-    Page<ItemDtoOut> searchItemByTextPage(String text, String from, String size);
+    List<ItemDtoOut> searchItemByTextPage(String text, String from, String size);
 }

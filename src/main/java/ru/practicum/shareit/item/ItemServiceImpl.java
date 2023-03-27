@@ -116,7 +116,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemDtoOut> getAllItemByUserIdPage(long userId, String from, String size) {
+    public List<ItemDtoOut> getAllItemByUserIdPage(long userId, String from, String size) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         checkUserIdInItem(userId); // проверка существует ли user по id на исключение
 
@@ -124,7 +124,7 @@ public class ItemServiceImpl implements ItemService {
 
         Page<Item> page = repository.findAllByOwner_Id(userId, pageable);
 
-        return helpPage(page, pageable, callTime);
+        return helpPage(page, pageable, callTime).getContent();
     }
 
     @Override
@@ -139,13 +139,13 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Page<ItemDtoOut> searchItemByTextPage(String text, String from, String size) {
+    public List<ItemDtoOut> searchItemByTextPage(String text, String from, String size) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortIdDesc);
         // page mapping
         List<ItemDtoOut> itemDtoOuts = searchItemByText(text);
         Page<ItemDtoOut> pageOut = new PageImpl<>(itemDtoOuts, pageable, itemDtoOuts.size());
-        return pageOut;
+        return pageOut.getContent();
     }
 
     private Page<ItemDtoOut> helpPage(Page<Item> page, Pageable pageable, LocalDateTime callTime) {

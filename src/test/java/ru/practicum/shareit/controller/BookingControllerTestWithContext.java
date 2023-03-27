@@ -137,7 +137,7 @@ class BookingControllerTestWithContext {
         Pageable pageableBlank = PageRequest.of(0, 1, Sort.by(Sort.DEFAULT_DIRECTION, "id"));
         PageImpl<BookingDtoOut> ans = new PageImpl<>(bookingDtoOuts, pageableBlank, 100);
         when(service.getAllBookingsByUserIdPage(anyInt(), any(), any(), any()))
-                .thenReturn(ans);
+                .thenReturn(ans.getContent());
 
         mvc.perform(get(basePath)
                         .content(mapper.writeValueAsString(bookingDtoInput))
@@ -175,7 +175,7 @@ class BookingControllerTestWithContext {
         Pageable pageableBlank = PageRequest.of(0, 1, Sort.by(Sort.DEFAULT_DIRECTION, "id"));
         PageImpl<BookingDtoOut> ans = new PageImpl<>(bookingDtoOuts, pageableBlank, 100);
         when(service.getAllBookingsByOwnerPage(anyInt(), any(), any(), any()))
-                .thenReturn(ans);
+                .thenReturn(ans.getContent());
 
         mvc.perform(get(basePath + "/owner")
                         .content(mapper.writeValueAsString(bookingDtoInput))

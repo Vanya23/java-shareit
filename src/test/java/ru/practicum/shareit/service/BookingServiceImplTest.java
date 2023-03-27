@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingService;
@@ -133,8 +132,7 @@ class BookingServiceImplTest {
                 LocalDateTime.now().plusDays(2), testItemId1);
 
         BookingDtoOut out = service.addBooking(testUserId2, bookingDto);
-        Page<BookingDtoOut> outgetBookingByIdPage = service.getAllBookingsByOwnerPage(testUserId1, "ALL", "0", "100");
-        List<BookingDtoOut> outgetBookingById = outgetBookingByIdPage.getContent();
+        List<BookingDtoOut> outgetBookingById = service.getAllBookingsByOwnerPage(testUserId1, "ALL", "0", "100");
 
         assertThat(outgetBookingById.get(0).getId(), notNullValue());
         assertThat(outgetBookingById.get(0).getItem().getId(), equalTo(testItemId1));
@@ -169,9 +167,8 @@ class BookingServiceImplTest {
                 LocalDateTime.now().plusDays(2), testItemId1);
 
         BookingDtoOut out = service.addBooking(testUserId2, bookingDto);
-        Page<BookingDtoOut> outgetAllBookingsByUserIdPage = service.getAllBookingsByUserIdPage(testUserId2, "ALL", "0", "100");
-        List<BookingDtoOut> outgetAllBookingsByUserId =
-                outgetAllBookingsByUserIdPage.getContent();
+        List<BookingDtoOut> outgetAllBookingsByUserId = service.getAllBookingsByUserIdPage(testUserId2, "ALL", "0", "100");
+
 
         assertThat(outgetAllBookingsByUserId.get(0).getId(), notNullValue());
         assertThat(outgetAllBookingsByUserId.get(0).getItem().getId(), equalTo(testItemId1));
@@ -326,7 +323,7 @@ class BookingServiceImplTest {
         assertThrows(RuntimeException.class, () -> {
             service.getAllBookingsByUserIdPage(testUserId1, "ALL123", "0", "100");
         });
-        List<Page<BookingDtoOut>> listGetAllBookingsByUserIdPage = new ArrayList<>();
+        List<List<BookingDtoOut>> listGetAllBookingsByUserIdPage = new ArrayList<>();
         for (String s :
                 states) {
             listGetAllBookingsByUserIdPage.add(service.getAllBookingsByUserIdPage(testUserId1, s,
@@ -334,7 +331,7 @@ class BookingServiceImplTest {
 
         }
 
-        for (Page<BookingDtoOut> list :
+        for (List<BookingDtoOut> list :
                 listGetAllBookingsByUserIdPage) {
             assertThat(list, notNullValue());
         }
@@ -360,7 +357,7 @@ class BookingServiceImplTest {
         assertThrows(RuntimeException.class, () -> {
             service.getAllBookingsByOwnerPage(testUserId1, "ALL123", "0", "100");
         });
-        List<Page<BookingDtoOut>> listgetAllBookingsByOwnerPage = new ArrayList<>();
+        List<List<BookingDtoOut>> listgetAllBookingsByOwnerPage = new ArrayList<>();
         for (String s :
                 states) {
             listgetAllBookingsByOwnerPage.add(service.getAllBookingsByOwnerPage(testUserId1, s,
@@ -368,7 +365,7 @@ class BookingServiceImplTest {
 
         }
 
-        for (Page<BookingDtoOut> list :
+        for (List<BookingDtoOut> list :
                 listgetAllBookingsByOwnerPage) {
             assertThat(list, notNullValue());
         }
