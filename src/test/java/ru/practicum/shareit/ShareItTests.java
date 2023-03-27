@@ -9,11 +9,11 @@ import static org.hamcrest.Matchers.notNullValue;
 @SpringBootTest
 class ShareItTests {
 
-	@Test
-	void contextLoads() {
-		ShareItApp shareItApp = new ShareItApp();
-		ShareItApp.main(new String[]{""});
-		assertThat(shareItApp, notNullValue());
-	}
+    @Test
+    void contextLoads() {
+        ShareItApp shareItApp = new ShareItApp();
+        ShareItApp.main(new String[]{""});
+        assertThat(shareItApp, notNullValue());
+    }
 
 }

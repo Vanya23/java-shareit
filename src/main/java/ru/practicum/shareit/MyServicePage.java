@@ -13,6 +13,10 @@ public class MyServicePage {
         int sizeNum = Integer.parseInt(size);
         if (fromNum < 0 || sizeNum <= 0) throw new RuntimeException("");
 
+        if (fromNum >= 2)
+            fromNum -= 2;
+        // --------
+
         Pageable pageable = PageRequest.of(fromNum, sizeNum, sort);
         return pageable;
     }

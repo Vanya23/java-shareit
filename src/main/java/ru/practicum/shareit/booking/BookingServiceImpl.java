@@ -94,8 +94,10 @@ public class BookingServiceImpl implements BookingService {
         if (!userRepository.existsById(userId)) throw new NotFoundException(getClass() + " user Not Found");
         Page<Booking> page = new PageImpl<>(List.of(), pageableBlank, 0); // если запрос пустой;
         User booker = userRepository.getReferenceById(userId);
+
         switch (bookingState) {
             case ALL:
+
                 page = repository.findAllByBooker(booker, pageable);
                 break;
             case WAITING:
