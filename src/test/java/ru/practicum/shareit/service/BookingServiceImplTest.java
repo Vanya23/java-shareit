@@ -6,16 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.dto.BookingDtoOutputForItem;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.ItemDtoIn;
 import ru.practicum.shareit.item.dto.ItemDtoOut;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -39,6 +42,8 @@ class BookingServiceImplTest {
     private final UserService userService;
     private final ItemService itemService;
     private final ItemRepository repository;
+    private final BookingRepository bookingRepository;
+    private final ItemMapper itemMapper;
 
     private long userCount = 0;
     private long testUserId1;
@@ -194,6 +199,23 @@ class BookingServiceImplTest {
             service.getAllBookingsByOwner(testUserId1 * 100, "ALL");
         });
 
+
+    }
+
+    @Test
+    void itemMapperTest() {
+        testUserId1 = getTestUserId(); // владелец
+        testUserId2 = getTestUserId(); // арендатор
+        testItemId1 = getTestItemId();
+
+        BookingDtoInput bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2), testItemId1);
+        BookingDtoOut out = service.addBooking(testUserId2, bookingDto);
+        Booking booking = bookingRepository.getReferenceById(out.getId());
+        BookingDtoOutputForItem in = itemMapper.fromBookingToBookingDtoOutputForItem(
+                booking);
+
+        assertThat(in, notNullValue());
 
     }
 

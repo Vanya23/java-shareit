@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)

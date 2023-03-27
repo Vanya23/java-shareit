@@ -25,12 +25,5 @@ public class UserMapper {
         return new User(userDto.getId(), userDto.getName(), userDto.getEmail());
     }
 
-    public List<User> fromListUserDtoListToUser(List<UserDto> users) {
-        List<User> userList = new ArrayList<>();
-        for (UserDto userDto :
-                users) {
-            userList.add(fromUserDtoToUser(userDto));
-        }
-        return userList;
-    }
+
 }

@@ -29,7 +29,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
-    public ErrorResponse handleIMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+    public ErrorResponse handleIMethodArgumentNotValidException(final MethodArgumentNotValidException  e) {
         log.warn("Ошибка {}", e.getMessage(), e);
         return new ErrorResponse(
                 String.format(myTextError, e.getMessage())

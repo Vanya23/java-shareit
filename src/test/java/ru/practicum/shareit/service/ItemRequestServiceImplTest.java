@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.ItemDtoIn;
@@ -13,14 +14,18 @@ import ru.practicum.shareit.item.dto.ItemDtoOut;
 import ru.practicum.shareit.request.ItemRequestService;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
 import ru.practicum.shareit.request.dto.ItemRequestDtoOut;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //@Rollback(false)
 @Transactional
@@ -55,6 +60,26 @@ class ItemRequestServiceImplTest {
 
         assertThat(out.getId(), notNullValue());
         assertThat(out.getDescription(), equalTo(itemRequestDtoIn.getDescription()));
+    }
+
+    @Test
+    void getAllByUserId() {
+        testUserId1 = getTestUserId(); // владелец
+        testUserId2 = getTestUserId(); // арендатор
+        ItemRequestDtoIn itemRequestDtoIn = new ItemRequestDtoIn();
+        itemRequestDtoIn.setDescription("нужна отвертка");
+        ItemRequestDtoOut out = service.addItemRequest(testUserId2, itemRequestDtoIn);
+        ItemDtoIn itemDto = makeItemDtoIn("отвертка" + itemCount, "дрель" + itemCount, Boolean.TRUE);
+        itemDto.setRequestId(out.getId());
+        itemCount++;
+        ItemDtoOut out2 = itemService.addItem(testUserId1, itemDto);
+        testItemId1 = out2.getId();
+
+
+        List<ItemRequestDtoOut> outList = service.getAllByUserId(testUserId2);
+
+        assertThat(outList.get(0).getId(), notNullValue());
+        assertThat(outList.get(0).getDescription(), equalTo(itemRequestDtoIn.getDescription()));
     }
 
     @Test
@@ -104,6 +129,46 @@ class ItemRequestServiceImplTest {
 
         assertThat(outGetByRequestId.getId(), notNullValue());
         assertThat(outGetByRequestId.getDescription(), equalTo(itemRequestDtoIn.getDescription()));
+    }
+
+    @Test
+    void itemRequestTest() {
+        ItemRequest itemRequest1 = new ItemRequest(
+                1L, "desc", new User(), LocalDateTime.now());
+        ItemRequest itemRequest2 = new ItemRequest();
+        itemRequest2.setId(itemRequest1.getId());
+        itemRequest2.setDescription(itemRequest1.getDescription());
+        itemRequest2.setRequestor(itemRequest1.getRequestor());
+        itemRequest2.setCreated(itemRequest1.getCreated());
+
+        assertThat(itemRequest1, equalTo(itemRequest2));
+        assertThat(itemRequest1.hashCode(), equalTo(itemRequest2.hashCode()));
+
+    }
+
+    @Test
+    void itemRequestDtoOut() {
+        ItemRequestDtoOut itemRequest1 = new ItemRequestDtoOut(
+                1L, "desc", "new User()", null);
+        ItemRequestDtoOut itemRequest2 = new ItemRequestDtoOut();
+        itemRequest2.setId(itemRequest1.getId());
+        itemRequest2.setDescription(itemRequest1.getDescription());
+        itemRequest2.setItems(itemRequest1.getItems());
+        itemRequest2.setCreated(itemRequest1.getCreated());
+
+        assertThat(itemRequest1.hashCode(), notNullValue());
+
+    }
+
+    @Test
+    void getByRequestIdNotFoundException() {
+
+
+        assertThrows(NotFoundException.class, () -> {
+            service.getByRequestId(-1, 1);
+        });
+
+
     }
 
 

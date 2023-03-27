@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-//@RequiredArgsConstructor
-@ToString
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)

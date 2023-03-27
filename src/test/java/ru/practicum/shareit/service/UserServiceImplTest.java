@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.EntityManager;
@@ -34,6 +35,7 @@ class UserServiceImplTest {
 
     private final UserService service;
     private final UserRepository repository;
+    private final UserMapper userMapper;
     private final EntityManager em;
 
     private long id;
@@ -57,10 +59,25 @@ class UserServiceImplTest {
     }
 
     @Test
+    void patchUser() {
+        UserDto userDto = makeUserDto("Пётр", "some@email.com");
+        UserDto userDto2 = makeUserDto("Пётр2", "some@email.com");
+        UserDto out = service.addUser(userDto);
+        out = service.patchUser(out.getId(), userDto2);
+
+
+        User user = repository.getReferenceById(out.getId());
+        assertThat(user.getId(), notNullValue());
+        assertThat(user.getName(), equalTo(userDto2.getName()));
+        assertThat(user.getEmail(), equalTo(userDto2.getEmail()));
+    }
+
+    @Test
     void getAllUsers() {
         List<UserDto> userDtoList = makeListUserDto("Пётр", "some@email.com", 3);
         List<UserDto> outList = saveUserList(userDtoList);
         List<User> users = new ArrayList<>();
+        outList = service.getAllUsers();
         for (UserDto userDto :
                 outList) {
             User user = repository.getReferenceById(userDto.getId());
@@ -106,6 +123,35 @@ class UserServiceImplTest {
             service.addUser(userDto);
         });
 
+
+    }
+
+    @Test
+    void testUser() {
+        User user1 = new User(1L, "Petr", "abc@mail.com");
+        User user2 = new User();
+        user2.setId(user1.getId());
+        user2.setName(user1.getName());
+        user2.setEmail(user1.getEmail());
+
+        assertThat(user1, equalTo(user2));
+        assertThat(user1.hashCode(), equalTo(user2.hashCode()));
+
+    }
+
+    @Test
+    void fromListUserToListUserDto() {
+        User user1 = new User(1L, "Petr", "abc@mail.com");
+        User user2 = new User();
+        user2.setId(user1.getId());
+        user2.setName(user1.getName());
+        user2.setEmail(user1.getEmail());
+        List<User> users = new ArrayList<>();
+        users.add(user1);
+        users.add(user2);
+        List<UserDto> usersDtos = userMapper.fromListUserToListUserDto(users);
+
+        assertThat(usersDtos.size(), equalTo(2));
 
     }
 

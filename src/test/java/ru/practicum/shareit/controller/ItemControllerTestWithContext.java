@@ -191,5 +191,23 @@ class ItemControllerTestWithContext {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void searchItemByTextPageBlank() throws Exception {
+        List<ItemDtoOut> itemDtoOuts = new ArrayList<>();
+        itemDtoOuts.add(itemDtoOut);
+        Pageable pageableBlank = PageRequest.of(0, 1, Sort.by(Sort.DEFAULT_DIRECTION, "id"));
+        PageImpl<ItemDtoOut> ans = new PageImpl<>(itemDtoOuts, pageableBlank, 100);
+        when(itemService.searchItemByTextPage(any(), any(), any()))
+                .thenReturn(ans);
+        mvc.perform(
+                        get(basePath + "/search")
+                                .content(mapper.writeValueAsString(itemDtoOut))
+                                .param("text", " ")
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
 
 }
