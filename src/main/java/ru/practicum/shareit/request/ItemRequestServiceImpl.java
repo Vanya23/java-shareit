@@ -44,25 +44,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
         List<ItemRequest> itemRequests = repository.findAllByRequestor_Id(userId, sortCreatedDesc);
 
-        List<Item> items = itemRepository.findAllByRequestIn(itemRequests); // получили все вещи по имеющимся запросам
-        // далее делаем мапу номер запроса и номера соотв вещей
-        Map<Long, List<Item>> map = new HashMap<>();
-        for (Item item :
-                items) {
-            long reqId = item.getRequest().getId();
-            if (!map.containsKey(reqId)) map.put(reqId, new ArrayList<>());
-            map.get(reqId).add(item);
-        }
-
         List<ItemRequestDtoOut> itemRequestsList = mapper.fromListItemRequestToListItemRequestDtoOut(itemRequests);
         // заполняем запросы
-        for (ItemRequestDtoOut itemRequestDtoOut :
-                itemRequestsList) {
-            long itemReqId = itemRequestDtoOut.getId();
-            if (map.containsKey(itemReqId))
-                itemRequestDtoOut.setItems(
-                        itemMapper.fromListItemToListDtoOutForItemRequest(map.get(itemReqId)));
-        }
+        helpToAddItem(itemRequests, itemRequestsList); // добавление списка Item
 
         return itemRequestsList;
     }
@@ -94,7 +78,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Page<ItemRequest> page = repository.findAllByRequestor_IdIsNot(userId, pageable);
 
         // page mapping
-        List<ItemRequestDtoOut> itemRequestDtoOuts = mapper.fromListItemRequestToListItemRequestDtoOut(page.getContent());
+        List<ItemRequestDtoOut> itemRequestDtoOuts = mapper.fromListItemRequestToListItemRequestDtoOut(
+                page.getContent());
+        helpToAddItem(page.getContent(), itemRequestDtoOuts); // добавление списка Item
+
         Page<ItemRequestDtoOut> pageOut = new PageImpl<>(itemRequestDtoOuts, pageable, page.getTotalElements());
 
         return pageOut.getContent();
@@ -105,9 +92,32 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
         ItemRequest itemRequest = repository.getReferenceById(requestId);
 
-        return mapper.fromItemRequestToItemRequestDtoOut(itemRequest);
+        ItemRequestDtoOut itemRequestDtoOuts = mapper.fromItemRequestToItemRequestDtoOut(itemRequest);
+        helpToAddItem(List.of(itemRequest), List.of(itemRequestDtoOuts)); // добавление списка Item
+
+        return itemRequestDtoOuts;
     }
 
+    private void helpToAddItem(List<ItemRequest> itemRequests, List<ItemRequestDtoOut> itemRequestDtoOuts) {
+        List<Item> items = itemRepository.findAllByRequestIn(itemRequests);
+        // раскладываем по ключу id Req и соотв ему список Item
+        Map<Long, List<Item>> map = new HashMap<>();
+        for (Item item :
+                items) {
+            Long id = item.getRequest().getId();
+            if (!map.containsKey(id)) map.put(id, new ArrayList<>());
+            map.get(id).add(item);
+        }
+
+        // добавляем список Item
+        for (ItemRequestDtoOut itemRequestDtoOut :
+                itemRequestDtoOuts) {
+            Long id = itemRequestDtoOut.getId();
+            if (!map.containsKey(id)) continue;
+            itemRequestDtoOut.setItems(
+                    itemMapper.fromListItemToListDtoOutForItemRequest(map.get(id)));
+        }
+    }
 
     private void checkUserIdInIItemRequest(long userId) {
         if (!userRepository.existsUserById(userId))

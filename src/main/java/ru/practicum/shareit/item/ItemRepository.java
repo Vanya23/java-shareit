@@ -28,11 +28,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " order by id;", nativeQuery = true)
     List<Item> searchItemByText(String textForFind);
 
-    @Query(value = "select * from items " +
-            " where (lower(description) LIKE lower(concat('%', ?1, '%')) or lower(full_name) LIKE lower(concat('%', ?1, '%')))" +
-            "and available = true " +
-            " order by id;", nativeQuery = true)
-    Page<Item> searchItemByTextPage(String textForFind, Pageable pageable);
-
-
 }
