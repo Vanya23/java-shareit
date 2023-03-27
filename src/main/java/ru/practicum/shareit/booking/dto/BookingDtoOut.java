@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDtoOut {
     Long id;

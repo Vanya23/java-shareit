@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.dto.BookingDtoOutputForItem;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
@@ -23,6 +24,7 @@ import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -212,10 +214,204 @@ class BookingServiceImplTest {
                 LocalDateTime.now().plusDays(2), testItemId1);
         BookingDtoOut out = service.addBooking(testUserId2, bookingDto);
         Booking booking = bookingRepository.getReferenceById(out.getId());
+        Booking booking2 = new Booking(
+                booking.getStart(), booking.getEnd(), booking.getItem(),
+                booking.getBooker(), booking.getStatus()
+        );
+        booking2.setId(booking.getId());
         BookingDtoOutputForItem in = itemMapper.fromBookingToBookingDtoOutputForItem(
                 booking);
 
         assertThat(in, notNullValue());
+        assertThat(booking.hashCode(), notNullValue());
+        assertThat(booking, equalTo(booking2));
+
+
+    }
+
+    @Test
+    void bookingDtoOutTest() {
+        BookingDtoOut bookingDtoOut = new BookingDtoOut();
+        bookingDtoOut.setId(1L);
+        bookingDtoOut.setStart("");
+        bookingDtoOut.setEnd("");
+        bookingDtoOut.setItem(null);
+        bookingDtoOut.setBooker(null);
+        bookingDtoOut.setStatus("");
+        BookingDtoOut bookingDtoOut2 = new BookingDtoOut(
+                bookingDtoOut.getId(), bookingDtoOut.getStart(),
+                bookingDtoOut.getEnd(), bookingDtoOut.getItem(),
+                bookingDtoOut.getBooker(), bookingDtoOut.getStatus()
+        );
+
+        assertThat(bookingDtoOut, notNullValue());
+        assertThat(bookingDtoOut2, notNullValue());
+
+    }
+
+    @Test
+    void bookingDtoOutputForItemTest() {
+        BookingDtoOutputForItem bookingDtoOut = new BookingDtoOutputForItem();
+        bookingDtoOut.setId(1L);
+        bookingDtoOut.setStart("");
+        bookingDtoOut.setEnd("");
+        bookingDtoOut.setItemId(1L);
+        bookingDtoOut.setBookerId(1L);
+        bookingDtoOut.setStatus("");
+        BookingDtoOutputForItem bookingDtoOut2 = new BookingDtoOutputForItem(
+                bookingDtoOut.getId(), bookingDtoOut.getStart(),
+                bookingDtoOut.getEnd(), bookingDtoOut.getItemId(),
+                bookingDtoOut.getBookerId(), bookingDtoOut.getStatus()
+        );
+
+        assertThat(bookingDtoOut, notNullValue());
+        assertThat(bookingDtoOut2, notNullValue());
+
+    }
+
+    @Test
+    void bigTest() {
+        ItemDtoIn itemDto = makeItemDtoIn("отвертка", "дрель", Boolean.TRUE);
+        testUserId1 = getTestUserId();   // владелец
+        ItemDtoOut out = itemService.addItem(testUserId1, itemDto);
+        testUserId2 = getTestUserId(); // арендатор
+        testItemId1 = out.getId();
+
+        // прошлое approved
+        BookingDtoInput bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusNanos(1),
+                LocalDateTime.now().plusNanos(2), testItemId1);
+        BookingDtoOut outB = service.addBooking(testUserId2, bookingDto);
+        outB = service.patchBooking(outB.getId(), testUserId1, Boolean.TRUE);
+
+        // будущее approved
+        bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2), testItemId1);
+        outB = service.addBooking(testUserId2, bookingDto);
+        outB = service.patchBooking(outB.getId(), testUserId1, Boolean.TRUE);
+        // текущее approved
+        bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusNanos(1),
+                LocalDateTime.now().plusHours(1), testItemId1);
+        outB = service.addBooking(testUserId2, bookingDto);
+        outB = service.patchBooking(outB.getId(), testUserId1, Boolean.TRUE);
+        // будущее waiting
+        bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(10),
+                LocalDateTime.now().plusDays(11), testItemId1);
+        // будущее REJECTED
+        bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(20),
+                LocalDateTime.now().plusDays(21), testItemId1);
+        outB = service.addBooking(testUserId2, bookingDto);
+        outB = service.patchBooking(outB.getId(), testUserId1, Boolean.FALSE);
+
+        assertThrows(RuntimeException.class, () -> {
+            service.getAllBookingsByUserId(testUserId1, "ALL123");
+        });
+
+        String[] states = new String[]{"ALL", "WAITING", "REJECTED", "CURRENT", "PAST", "FUTURE"};
+        //---- проверка статусов в цикле
+        List<List<BookingDtoOut>> listGetAllBookingsByUserId = new ArrayList<>();
+        for (String s :
+                states) {
+            listGetAllBookingsByUserId.add(service.getAllBookingsByUserId(testUserId1, s));
+
+        }
+
+        for (List<BookingDtoOut> list :
+                listGetAllBookingsByUserId) {
+            assertThat(list, notNullValue());
+        }
+        //-------
+        assertThrows(RuntimeException.class, () -> {
+            service.getAllBookingsByUserIdPage(testUserId1, "ALL123", "0", "100");
+        });
+        List<Page<BookingDtoOut>> listGetAllBookingsByUserIdPage = new ArrayList<>();
+        for (String s :
+                states) {
+            listGetAllBookingsByUserIdPage.add(service.getAllBookingsByUserIdPage(testUserId1, s,
+                    "0", "100"));
+
+        }
+
+        for (Page<BookingDtoOut> list :
+                listGetAllBookingsByUserIdPage) {
+            assertThat(list, notNullValue());
+        }
+
+        ///---------------
+        //---- проверка статусов в цикле
+        assertThrows(RuntimeException.class, () -> {
+            service.getAllBookingsByOwner(testUserId1, "ALL123");
+        });
+        List<List<BookingDtoOut>> listGetAllBookingsByOwner = new ArrayList<>();
+        for (String s :
+                states) {
+            listGetAllBookingsByUserId.add(service.getAllBookingsByOwner(testUserId1, s));
+
+        }
+
+        for (List<BookingDtoOut> list :
+                listGetAllBookingsByOwner) {
+            assertThat(list, notNullValue());
+        }
+        ///---------------
+        //---- проверка статусов в цикле
+        assertThrows(RuntimeException.class, () -> {
+            service.getAllBookingsByOwnerPage(testUserId1, "ALL123", "0", "100");
+        });
+        List<Page<BookingDtoOut>> listgetAllBookingsByOwnerPage = new ArrayList<>();
+        for (String s :
+                states) {
+            listgetAllBookingsByOwnerPage.add(service.getAllBookingsByOwnerPage(testUserId1, s,
+                    "0", "100"));
+
+        }
+
+        for (Page<BookingDtoOut> list :
+                listgetAllBookingsByOwnerPage) {
+            assertThat(list, notNullValue());
+        }
+
+        //-----
+        BookingDtoInput finalBookingDto = bookingDto;
+        assertThrows(NotFoundException.class, () -> {
+            service.addBooking(-1, finalBookingDto);
+        });
+        assertThrows(NotFoundException.class, () -> {
+            service.addBooking(testUserId1, finalBookingDto);
+        });
+        itemDto.setAvailable(Boolean.FALSE);
+        itemService.patchItem(testUserId1, testItemId1, itemDto);
+        assertThrows(BadRequestException.class, () -> {
+            service.addBooking(testUserId2, finalBookingDto);
+        });
+        itemDto.setAvailable(Boolean.TRUE);
+        itemService.patchItem(testUserId1, testItemId1, itemDto);
+
+        //------------
+        bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(50),
+                LocalDateTime.now().plusDays(51), testItemId1);
+        outB = service.addBooking(testUserId2, bookingDto);
+        outB = service.patchBooking(outB.getId(), testUserId1, Boolean.TRUE);
+        BookingDtoOut finalOutB = outB;
+        assertThrows(BadRequestException.class, () -> {
+            service.patchBooking(finalOutB.getId(), testUserId1, Boolean.TRUE);
+        });
+        //-------
+        bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(60),
+                LocalDateTime.now().plusDays(61), testItemId1);
+        outB = service.addBooking(testUserId2, bookingDto);
+        BookingDtoOut finalOutB1 = outB;
+        assertThrows(NotFoundException.class, () -> {
+            service.patchBooking(finalOutB1.getId(), testUserId1 + 1, Boolean.TRUE);
+        });
+        //-------
+        bookingDto = new BookingDtoInput(0L, LocalDateTime.now().plusDays(70),
+                LocalDateTime.now().plusDays(69), testItemId1);
+        BookingDtoInput finalBookingDto1 = bookingDto;
+        assertThrows(BadRequestException.class, () -> {
+            service.addBooking(testUserId2, finalBookingDto1);
+        });
+
+
 
     }
 
