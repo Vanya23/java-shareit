@@ -26,24 +26,16 @@ public class BookingMapper {
 
     BookingPatternTime bookingPatternTime;
 
-    public BookingDtoInput fromBookingToBookingDtoInput(Booking booking) {
-        return new BookingDtoInput(
-                booking.getId(),
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getItem().getId()
-        );
+//    public BookingDtoInput fromBookingToBookingDtoInput(Booking booking) {
+//        return new BookingDtoInput(
+//                booking.getId(),
+//                booking.getStart(),
+//                booking.getEnd(),
+//                booking.getItem().getId()
+//        );
+//
+//    }
 
-    }
-
-    public List<BookingDtoInput> fromListBookingToListBookingDtoInput(List<Booking> bookings) {
-        List<BookingDtoInput> bookingDtoList = new ArrayList<>();
-        for (Booking booking :
-                bookings) {
-            bookingDtoList.add(fromBookingToBookingDtoInput(booking));
-        }
-        return bookingDtoList;
-    }
 
     public Booking fromBookingDtoInputToBooking(BookingDtoInput bookingDto, Long booker, BookingStatus status, DateTimeFormatter formatter,
                                                 ItemRepository itemRepository, UserRepository userRepository) {
@@ -58,8 +50,8 @@ public class BookingMapper {
 
     }
 
-    public BookingDtoOutput fromBookingToBookingDtoOutput(Booking booking) {
-        return new BookingDtoOutput(
+    public BookingDtoOut fromBookingToBookingDtoOutput(Booking booking) {
+        return new BookingDtoOut(
                 booking.getId(),
                 booking.getStart().format(bookingPatternTime.getFormatter()),
                 booking.getEnd().format(bookingPatternTime.getFormatter()),
@@ -70,8 +62,8 @@ public class BookingMapper {
 
     }
 
-    public List<BookingDtoOutput> fromListBookingToListBookingDtoOutput(List<Booking> bookings) {
-        List<BookingDtoOutput> bookingDtoOutputList = new ArrayList<>();
+    public List<BookingDtoOut> fromListBookingToListBookingDtoOutput(List<Booking> bookings) {
+        List<BookingDtoOut> bookingDtoOutputList = new ArrayList<>();
         for (Booking booking :
                 bookings) {
             bookingDtoOutputList.add(fromBookingToBookingDtoOutput(booking));

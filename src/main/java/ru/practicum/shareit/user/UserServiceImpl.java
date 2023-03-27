@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(long userId) {
-            return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
+        return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
     }
 
     @Override

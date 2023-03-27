@@ -46,7 +46,7 @@ public class ItemRequestController {
 
 
     @GetMapping(value = "/all")
-    public List<ItemRequestDtoOut> getAllOtherUsersPage(@RequestHeader(headerUserId) long userId) {
+    public List<ItemRequestDtoOut> getAllOtherUsers(@RequestHeader(headerUserId) long userId) {
         return service.getAllOtherUsers(userId);
     }
 

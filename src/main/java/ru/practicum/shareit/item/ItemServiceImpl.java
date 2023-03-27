@@ -141,8 +141,10 @@ public class ItemServiceImpl implements ItemService {
     public Page<ItemDtoOut> searchItemByTextPage(String text, String from, String size) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortIdDesc);
-        Page<Item> page = repository.searchItemByTextPage(text, pageable);
-        return helpPage(page, pageable, callTime);
+        // page mapping
+        List<ItemDtoOut> itemDtoOuts = searchItemByText(text);
+        Page<ItemDtoOut> pageOut = new PageImpl<>(itemDtoOuts, pageable, itemDtoOuts.size());
+        return pageOut;
     }
 
     private Page<ItemDtoOut> helpPage(Page<Item> page, Pageable pageable, LocalDateTime callTime) {

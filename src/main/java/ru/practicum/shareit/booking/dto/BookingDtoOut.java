@@ -12,7 +12,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 @Setter
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookingDtoOutput {
+public class BookingDtoOut {
     Long id;
     String start; // дата и время начала бронирования;
     String end; // дата и время конца бронирования;

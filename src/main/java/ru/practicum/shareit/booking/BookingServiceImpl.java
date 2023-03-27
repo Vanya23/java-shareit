@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.MyServicePage;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
-import ru.practicum.shareit.booking.dto.BookingDtoOutput;
+import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingPatternTime;
@@ -44,7 +44,7 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public List<BookingDtoOutput> getAllBookingsByUserId(long userId, String state) {
+    public List<BookingDtoOut> getAllBookingsByUserId(long userId, String state) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         BookingState bookingState = null;
         try {
@@ -80,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<BookingDtoOutput> getAllBookingsByUserIdPage(long userId, String state, String from, String size) {
+    public Page<BookingDtoOut> getAllBookingsByUserIdPage(long userId, String state, String from, String size) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortEndDesc);
         Pageable pageableBlank = myServicePage.getPageableBlank();
@@ -117,15 +117,15 @@ public class BookingServiceImpl implements BookingService {
         return helpPage(page, pageable);
     }
 
-    private Page<BookingDtoOutput> helpPage(Page<Booking> page, Pageable pageable) {
+    private Page<BookingDtoOut> helpPage(Page<Booking> page, Pageable pageable) {
         List<Booking> bookings = page.getContent();
-        List<BookingDtoOutput> bookingDtoOutput = mapper.fromListBookingToListBookingDtoOutput(bookings);
-        Page<BookingDtoOutput> pageOut = new PageImpl<>(bookingDtoOutput, pageable, page.getTotalElements());
+        List<BookingDtoOut> bookingDtoOutput = mapper.fromListBookingToListBookingDtoOutput(bookings);
+        Page<BookingDtoOut> pageOut = new PageImpl<>(bookingDtoOutput, pageable, page.getTotalElements());
         return pageOut;
     }
 
     @Override
-    public List<BookingDtoOutput> getAllBookingsByOwner(long userId, String state) {
+    public List<BookingDtoOut> getAllBookingsByOwner(long userId, String state) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         BookingState bookingState = null;
         try {
@@ -161,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<BookingDtoOutput> getAllBookingsByOwnerPage(long userId, String state, String from, String size) {
+    public Page<BookingDtoOut> getAllBookingsByOwnerPage(long userId, String state, String from, String size) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortEndDesc);
         Pageable pageableBlank = myServicePage.getPageableBlank();
@@ -200,7 +200,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDtoOutput getBookingById(long bookingId, long userId) {
+    public BookingDtoOut getBookingById(long bookingId, long userId) {
         if (!repository.existsById(bookingId)) throw new NotFoundException(getClass() + " getBookingById");
         Booking booking = repository.getReferenceById(bookingId);
         // проверка прав доступа
@@ -213,7 +213,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoOutput addBooking(long userId, BookingDtoInput bookingDto) {
+    public BookingDtoOut addBooking(long userId, BookingDtoInput bookingDto) {
         LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку остановки до этого момента
         // проверка id пользователя и id item
         if (!(userRepository.existsUserById(userId) && itemRepository.existsById(bookingDto.getItemId())))
@@ -232,7 +232,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoOutput patchBooking(long bookingId, long userId, Boolean approved) {
+    public BookingDtoOut patchBooking(long bookingId, long userId, Boolean approved) {
         User owner = userRepository.getReferenceById(userId);
         Booking booking = repository.getReferenceById(bookingId);
         if (booking.getStatus().equals(BookingStatus.APPROVED))
