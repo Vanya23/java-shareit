@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.error.exception.BadRequestException;
-import ru.practicum.shareit.error.exception.InternalServerErrorException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 
 import javax.persistence.EntityNotFoundException;
@@ -18,13 +17,6 @@ import javax.persistence.EntityNotFoundException;
 public class ErrorHandler {
     private final String myTextError = "%s";
 
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleInternalServerErrorException(final InternalServerErrorException e) {
-        log.warn("Ошибка {}", e.getMessage(), e);
-        return new ErrorResponse(String.format(myTextError, e.getMessage()));
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400

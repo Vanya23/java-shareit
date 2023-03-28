@@ -19,4 +19,8 @@ public interface ItemService {
     List<ItemDtoOut> searchItemByText(String text);
 
     CommentDtoOut postComment(long userId, long itemId, CommentDtoIn commentDto);
+
+    List<ItemDtoOut> getAllItemByUserIdPage(long userId, String from, String size);
+
+    List<ItemDtoOut> searchItemByTextPage(String text, String from, String size);
 }

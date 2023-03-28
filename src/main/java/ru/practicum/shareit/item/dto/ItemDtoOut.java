@@ -8,7 +8,6 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -17,7 +16,7 @@ public class ItemDtoOut {
     String name; // краткое название;
     String description; // развёрнутое описание;
     Boolean available; // статус о том, доступна или нет вещь для аренды;
-    Long request; // если вещь была создана по запросу другого пользователя, то в этом
+    Long requestId; // если вещь была создана по запросу другого пользователя, то в этом
 
     BookingDtoOutputForItem lastBooking; // информация последнего бронирования
 

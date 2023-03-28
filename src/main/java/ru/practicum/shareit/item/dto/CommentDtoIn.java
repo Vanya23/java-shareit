@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.shareit.Create;
 
 import javax.validation.constraints.NotBlank;
@@ -8,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
 public class CommentDtoIn {

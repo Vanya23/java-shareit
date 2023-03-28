@@ -19,18 +19,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
+
         return userMapper.fromListUserToListUserDto(repository.findAll());
     }
 
     @Override
     public UserDto getUserById(long userId) {
-            return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
+        return userMapper.fromUserToUserDto(repository.getReferenceById(userId));
     }
 
     @Override
     @Transactional
     public UserDto addUser(UserDto userDto) {
-        // На соответствие почты и null проверка объекта не выполняется т.к. сделана в @Validated
         // по условию задачи проверка уникальности почты выполняется в БД
         return userMapper.fromUserToUserDto(repository.save(userMapper.fromUserDtoToUser(userDto)));
     }

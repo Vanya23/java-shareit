@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)

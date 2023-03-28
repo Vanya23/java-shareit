@@ -14,4 +14,5 @@ public interface UserService {
     void deleteUser(long userId);
 
     UserDto patchUser(long userId, UserDto userDto);
+
 }
