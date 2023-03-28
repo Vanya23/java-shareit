@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto addUser(UserDto userDto) {
-        // На соответствие почты и null проверка объекта не выполняется т.к. сделана в @Validated
         // по условию задачи проверка уникальности почты выполняется в БД
         return userMapper.fromUserToUserDto(repository.save(userMapper.fromUserDtoToUser(userDto)));
     }

@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.MyServicePage;
+import ru.practicum.shareit.GeneratePageableObj;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.CommentDtoIn;
@@ -61,7 +61,7 @@ class ItemControllerTestWithContext {
     @MockBean
     ItemService itemService;
     @MockBean
-    MyServicePage myServicePage;
+    GeneratePageableObj myServicePage;
     @Autowired
     private MockMvc mvc;
 

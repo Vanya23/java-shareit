@@ -19,12 +19,11 @@ public class ItemRequestMapper {
 
 
     public ItemRequestDtoOut fromItemRequestToItemRequestDtoOut(ItemRequest itemRequest) {
-        ItemRequestDtoOut itemRequestDtoOut = new ItemRequestDtoOut(
+        return new ItemRequestDtoOut(
                 itemRequest.getId(),
                 itemRequest.getDescription(),
                 itemRequest.getCreated().format(bookingPatternTime.getFormatter()),
                 new ArrayList<>());
-        return itemRequestDtoOut;
     }
 
     public List<ItemRequestDtoOut> fromListItemRequestToListItemRequestDtoOut(List<ItemRequest> items) {

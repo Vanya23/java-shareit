@@ -3,10 +3,10 @@ package ru.practicum.shareit;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class MyServicePage {
+@Service
+public class GeneratePageableObj {
 
     public Pageable checkAndCreatePageable(String from, String size, Sort sort) {
         int fromNum = Integer.parseInt(from);

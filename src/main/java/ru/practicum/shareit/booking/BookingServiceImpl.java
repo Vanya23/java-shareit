@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.MyServicePage;
+import ru.practicum.shareit.GeneratePageableObj;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -37,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
     ItemRepository itemRepository;
     UserRepository userRepository;
     BookingMapper mapper;
-    MyServicePage myServicePage;
+    GeneratePageableObj myServicePage;
     BookingPatternTime bookingPatternTime;
     Sort sortEndDesc = Sort.by(Sort.Direction.DESC, "end");
     Sort sortIdDesc = Sort.by(Sort.Direction.ASC, "id");
@@ -45,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoOut> getAllBookingsByUserId(long userId, String state) {
-        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1);
         BookingState bookingState = null;
         try {
             bookingState = BookingState.valueOf(state);
@@ -81,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoOut> getAllBookingsByUserIdPage(long userId, String state, String from, String size) {
-        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1);
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortEndDesc);
         Pageable pageableBlank = myServicePage.getPageableBlank();
         BookingState bookingState = null;
@@ -92,7 +92,7 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Unknown state: UNSUPPORTED_STATUS");
         }
         if (!userRepository.existsById(userId)) throw new NotFoundException(getClass() + " user Not Found");
-        Page<Booking> page = new PageImpl<>(List.of(), pageableBlank, 0); // если запрос пустой;
+        Page<Booking> page = new PageImpl<>(List.of(), pageableBlank, 0);
         User booker = userRepository.getReferenceById(userId);
 
         switch (bookingState) {
@@ -128,7 +128,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoOut> getAllBookingsByOwner(long userId, String state) {
-        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1);
         BookingState bookingState = null;
         try {
             bookingState = BookingState.valueOf(state);
@@ -164,7 +164,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoOut> getAllBookingsByOwnerPage(long userId, String state, String from, String size) {
-        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку оставки до этого момента
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1);
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortEndDesc);
         Pageable pageableBlank = myServicePage.getPageableBlank();
         BookingState bookingState = null;
@@ -174,7 +174,7 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Unknown state: UNSUPPORTED_STATUS");
         }
         if (!userRepository.existsById(userId)) throw new NotFoundException(getClass() + " user Not Found");
-        Page<Booking> page = new PageImpl<>(List.of(), pageableBlank, 0); // если запрос пустой;
+        Page<Booking> page = new PageImpl<>(List.of(), pageableBlank, 0);
 
         List<Item> items = itemRepository.findAllByOwner(userRepository.getReferenceById(userId),
                 sortIdDesc);
@@ -216,8 +216,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDtoOut addBooking(long userId, BookingDtoInput bookingDto) {
-        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1); // не ставить точку остановки до этого момента
-        // проверка id пользователя и id item
+        LocalDateTime callTime = LocalDateTime.now().minusSeconds(1);
         if (!(userRepository.existsUserById(userId) && itemRepository.existsById(bookingDto.getItemId())))
             throw new NotFoundException(getClass() + "addBooking -> item or user not exist");
         Booking booking = mapper.fromBookingDtoInputToBooking(bookingDto, userId,

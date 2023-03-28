@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.MyServicePage;
+import ru.practicum.shareit.GeneratePageableObj;
 import ru.practicum.shareit.booking.BookingController;
 import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
@@ -80,7 +80,7 @@ class BookingControllerTestWithContext {
     @MockBean
     BookingService service;
     @MockBean
-    MyServicePage myServicePage;
+    GeneratePageableObj myServicePage;
     @Autowired
     private MockMvc mvc;
 

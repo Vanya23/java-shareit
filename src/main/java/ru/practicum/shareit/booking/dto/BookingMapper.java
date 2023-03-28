@@ -26,16 +26,6 @@ public class BookingMapper {
 
     BookingPatternTime bookingPatternTime;
 
-//    public BookingDtoInput fromBookingToBookingDtoInput(Booking booking) {
-//        return new BookingDtoInput(
-//                booking.getId(),
-//                booking.getStart(),
-//                booking.getEnd(),
-//                booking.getItem().getId()
-//        );
-//
-//    }
-
 
     public Booking fromBookingDtoInputToBooking(BookingDtoInput bookingDto, Long booker, BookingStatus status, DateTimeFormatter formatter,
                                                 ItemRepository itemRepository, UserRepository userRepository) {

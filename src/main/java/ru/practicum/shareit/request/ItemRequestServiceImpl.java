@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.MyServicePage;
+import ru.practicum.shareit.GeneratePageableObj;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemMapper;
@@ -35,13 +35,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     UserRepository userRepository;
     ItemMapper itemMapper;
     ItemRequestMapper mapper;
-    MyServicePage myServicePage;
+    GeneratePageableObj myServicePage;
     Sort sortCreatedDesc = Sort.by(Sort.Direction.DESC, "created");
-    Sort sortCreatedAsc = Sort.by(Sort.Direction.ASC, "created");
 
     @Override
     public List<ItemRequestDtoOut> getAllByUserId(long userId) {
-        checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
+        checkUserId(userId);
         List<ItemRequest> itemRequests = repository.findAllByRequestor_Id(userId, sortCreatedDesc);
 
         List<ItemRequestDtoOut> itemRequestsList = mapper.fromListItemRequestToListItemRequestDtoOut(itemRequests);
@@ -54,24 +53,23 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional
     public ItemRequestDtoOut addItemRequest(long userId, ItemRequestDtoIn itemRequestDtoIn) {
-        checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
+        checkUserId(userId);
         ItemRequest itemRequest = mapper.fromItemRequestDtoInToItemRequest(itemRequestDtoIn); // начало маппинга
         itemRequest.setRequestor(userRepository.getReferenceById(userId)); // конец маппинга
         repository.save(itemRequest);
-        ItemRequestDtoOut itemRequestDtoOut = mapper.fromItemRequestToItemRequestDtoOut(itemRequest);
-        return itemRequestDtoOut;
+        return mapper.fromItemRequestToItemRequestDtoOut(itemRequest);
     }
 
     @Override
     public List<ItemRequestDtoOut> getAllOtherUsers(long userId) {
-        checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
+        checkUserId(userId);
         List<ItemRequest> itemRequests = repository.findAllByRequestor_IdIsNot(userId, sortCreatedDesc);
         return mapper.fromListItemRequestToListItemRequestDtoOut(itemRequests);
     }
 
     @Override
     public List<ItemRequestDtoOut> getAllOtherUsersPage(long userId, String from, String size) {
-        checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
+        checkUserId(userId);
 
         Pageable pageable = myServicePage.checkAndCreatePageable(from, size, sortCreatedDesc);
 
@@ -89,7 +87,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDtoOut getByRequestId(long userId, long requestId) {
-        checkUserIdInIItemRequest(userId); // проверка существует ли user по id на исключение
+        checkUserId(userId);
         ItemRequest itemRequest = repository.getReferenceById(requestId);
 
         ItemRequestDtoOut itemRequestDtoOuts = mapper.fromItemRequestToItemRequestDtoOut(itemRequest);
@@ -119,7 +117,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
     }
 
-    private void checkUserIdInIItemRequest(long userId) {
+    private void checkUserId(long userId) {
+        // проверка существует ли user по id на исключение
         if (!userRepository.existsUserById(userId))
             throw new NotFoundException("IncorrectIdUserInClassItem"); // чтобы не прокручивался счетчик в бд
     }

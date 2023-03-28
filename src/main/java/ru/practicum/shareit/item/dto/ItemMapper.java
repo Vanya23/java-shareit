@@ -20,35 +20,35 @@ public class ItemMapper {
     CommentMapper commentMapper;
 
     public ItemDtoIn fromItemToItemDtoIn(Item item) {
-        ItemDtoIn itemDto = new ItemDtoIn(
-                item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                item.getRequest() != null ? item.getRequest().getId() : null
-        );
-        return itemDto;
+          return new ItemDtoIn(
+                  item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+                  item.getRequest() != null ? item.getRequest().getId() : null
+          );
+
     }
 
 
     public Item fromItemDtoInToItem(ItemDtoIn itemDto, long userId, UserRepository userRepository,
                                     ItemRequestRepository itemRequestRepository) {
-        Item item = new Item(itemDto.getId(),
+        return new Item(itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
                 userRepository.getReferenceById(userId),
                 itemDto.getRequestId() != null ? itemRequestRepository.getReferenceById(itemDto.getRequestId()) : null,
                 null, null, null);
-        return item;
+
     }
 
 
     public ItemDtoOut fromItemToItemDtoOut(Item item) {
-        ItemDtoOut itemDto = new ItemDtoOut(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+        return new ItemDtoOut(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
                 item.getRequest() != null ? item.getRequest().getId() : null,
                 item.getLastBooking() != null ? fromBookingToBookingDtoOutputForItem(item.getLastBooking()) : null,
                 item.getNextBooking() != null ? fromBookingToBookingDtoOutputForItem(item.getNextBooking()) : null,
                 item.getComments() != null ? commentMapper.fromListCommentToCommentDtoOut(item.getComments()) : null
         );
-        return itemDto;
+
     }
 
     public List<ItemDtoOut> fromListItemToListItemDtoOut(List<Item> items) {
@@ -73,14 +73,13 @@ public class ItemMapper {
     }
 
     public ItemDtoOutForItemRequest fromItemToItemDtoOutForItemRequest(Item item) {
-        ItemDtoOutForItemRequest itemDto = new ItemDtoOutForItemRequest(
+        return new ItemDtoOutForItemRequest(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
                 item.getRequest().getId()
         );
-        return itemDto;
     }
 
     public List<ItemDtoOutForItemRequest> fromListItemToListDtoOutForItemRequest(List<Item> items) {
