@@ -91,7 +91,9 @@ public class BookingController {
     }
 
     private void checkPageParametr(int from, int size) {
-        if(from < 0 || size <= 0) throw new IllegalArgumentException("checkPageParametr");
+        if(from < 0 || size <= 0) {
+            throw new IllegalArgumentException("checkPageParametr");
+        }
     }
 
 }
