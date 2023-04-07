@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.ConstraintViolationException;
-import java.lang.reflect.InvocationTargetException;
 
 @RestController
 @Validated
