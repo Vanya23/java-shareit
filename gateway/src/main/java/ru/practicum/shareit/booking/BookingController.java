@@ -45,7 +45,8 @@ public class BookingController {
     }
 
 
-    @GetMapping(value = "/owner", params = {"state"})
+//    @GetMapping(value = "/owner", params = {"state"})
+    @GetMapping("/owner")
     public ResponseEntity<Object> getAllBookingsByOwner(@RequestHeader(headerUserId) long userId,
                                                         @RequestParam(defaultValue = "ALL") String state) {
         BookingState stateB = BookingState.from(state)
