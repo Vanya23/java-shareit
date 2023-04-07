@@ -46,7 +46,7 @@ public class BookingController {
     }
 
 
-//    @GetMapping(value = "/owner", params = {"state"})
+    //    @GetMapping(value = "/owner", params = {"state"})
     @GetMapping("/owner")
     public ResponseEntity<Object> getAllBookingsByOwner(@RequestHeader(headerUserId) long userId,
                                                         @RequestParam(defaultValue = "ALL") String state) {
@@ -91,7 +91,7 @@ public class BookingController {
     }
 
     private void checkPageParametr(int from, int size) {
-        if(from < 0 || size <= 0) {
+        if (from < 0 || size <= 0) {
             throw new IllegalArgumentException("checkPageParametr");
         }
     }
