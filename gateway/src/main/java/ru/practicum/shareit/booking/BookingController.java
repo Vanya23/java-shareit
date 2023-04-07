@@ -30,7 +30,7 @@ public class BookingController {
                                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        checkPageParametr(from, size);
+//        checkPageParametr(from, size);
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getBookingsPage(userId, state, from, size);
 
@@ -46,8 +46,7 @@ public class BookingController {
     }
 
 
-    //    @GetMapping(value = "/owner", params = {"state"})
-    @GetMapping("/owner")
+    @GetMapping(value = "/owner")
     public ResponseEntity<Object> getAllBookingsByOwner(@RequestHeader(headerUserId) long userId,
                                                         @RequestParam(defaultValue = "ALL") String state) {
         BookingState stateB = BookingState.from(state)
@@ -56,14 +55,14 @@ public class BookingController {
         return bookingClient.getAllBookingsByOwner(userId, stateB);
     }
 
-    @GetMapping(value = "/owner", params = {"state", "from", "size"})
+    @GetMapping(value = "/owner", params = {"from", "size"})
     public ResponseEntity<Object> getAllBookingsByOwnerPage(@RequestHeader(headerUserId) long userId,
                                                             @RequestParam(name = "state", defaultValue = "all") String state,
                                                             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState stateB = BookingState.from(state)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
-        checkPageParametr(from, size);
+//        checkPageParametr(from, size);
         log.info("Get booking with state {}, userId={}, from={}, size={}", state, userId, from, size);
         return bookingClient.getAllBookingsByOwnerPage(userId, stateB, from, size);
 
@@ -90,10 +89,10 @@ public class BookingController {
         return bookingClient.patchBooking(bookingId, userId, approved);
     }
 
-    private void checkPageParametr(int from, int size) {
-        if (from < 0 || size <= 0) {
-            throw new IllegalArgumentException("checkPageParametr");
-        }
-    }
+//    private void checkPageParametr(int from, int size) {
+//        if (from < 0 || size <= 0) {
+//            throw new IllegalArgumentException("checkPageParametr");
+//        }
+//    }
 
 }
