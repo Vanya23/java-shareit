@@ -2,7 +2,7 @@ version: '3.8'
 services:
   gateway:
 #    build: .\gateway\
-    build: .
+    build: ./gateway/
 #    image:
     container_name: shareIt-gateway
     ports:
@@ -14,7 +14,7 @@ services:
 
   server:
 #    build: .\server\
-    build: .
+    build: ./server/
 
 #    image:
     container_name: shareIt-server
