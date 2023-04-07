@@ -85,7 +85,7 @@ public class BookingController {
      * //    PATCH /bookings/{bookingId}?approved={approved},
      * //    параметр approved может принимать значения true или false.
      */
-    @PatchMapping(value = "/{bookingId}", params = {"approved"} )
+    @PatchMapping(value = "/{bookingId}", params = {"approved"})
     public BookingDtoOut patchBooking(@PathVariable long bookingId,
                                       @RequestHeader(headerUserId) long userId,
                                       @RequestParam Boolean approved) {

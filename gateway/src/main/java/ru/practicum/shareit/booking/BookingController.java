@@ -79,7 +79,7 @@ public class BookingController {
         return bookingClient.bookItem(userId, requestDto);
     }
 
-    @PatchMapping(value = "/{bookingId}", params = {"approved"} )
+    @PatchMapping(value = "/{bookingId}", params = {"approved"})
     public ResponseEntity<Object> patchBooking(@PathVariable long bookingId,
                                                @RequestHeader(headerUserId) long userId,
                                                @RequestParam Boolean approved) {
