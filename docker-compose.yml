@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   gateway:
-#    build: .\gateway\
-    build: ./gateway/
+#    build: .\gateway\ # путь wind
+    build: ./gateway/ # путь lunix
 #    image:
     container_name: shareIt-gateway
     ports:
@@ -13,8 +13,8 @@ services:
       - SHAREIT_SERVER_URL=http://server:9090
 
   server:
-#    build: .\server\
-    build: ./server/
+#    build: .\server\ # путь wind
+    build: ./server/ # путь lunix
 
 #    image:
     container_name: shareIt-server
