@@ -69,7 +69,7 @@ public class BookingClient extends BaseClient {
                 "approved", approved.toString()
 
         );
-        return patch("/" + bookingId  + "?approved={approved}", userId, parameters);
+        return patch("/" + bookingId + "?approved={approved}", userId, parameters);
     }
 
     public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
