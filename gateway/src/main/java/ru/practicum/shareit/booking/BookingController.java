@@ -24,7 +24,7 @@ public class BookingController {
 
 	private final String headerUserId = "X-Sharer-User-Id";
 
-	@GetMapping
+	@GetMapping(params = {"from", "size"})
 	public ResponseEntity<Object> getBookingsPage(@RequestHeader(headerUserId) long userId,
 			@RequestParam(name = "state", defaultValue = "all") String stateParam,
 			@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
@@ -54,7 +54,7 @@ public class BookingController {
 		return bookingClient.getAllBookingsByOwner(userId, state);
 	}
 
-	@GetMapping(value = "/owner")
+	@GetMapping(value = "/owner", params = {"from", "size"})
 	public ResponseEntity<Object> getAllBookingsByOwnerPage(@RequestHeader(headerUserId) long userId,
 												  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 												  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
@@ -79,9 +79,6 @@ public class BookingController {
 		log.info("Creating booking {}, userId={}", requestDto, userId);
 		return bookingClient.bookItem(userId, requestDto);
 	}
-
-
-
 
 	@PatchMapping("/{bookingId}")
 	public ResponseEntity<Object> patchBooking(@PathVariable long bookingId,
