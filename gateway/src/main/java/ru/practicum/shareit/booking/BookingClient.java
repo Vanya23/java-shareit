@@ -65,11 +65,11 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> patchBooking(long bookingId, long userId, Boolean approved) {
-        Map<String, Object> parameters = Map.of(
-                "approved", approved
-
-        );
-        return patch("/" + bookingId + "?approved={approved}", userId, parameters);
+//        Map<String, Object> parameters = Map.of(
+//                "approved", approved.toString()
+//        );
+//        return patch("/" + bookingId + "?approved={approved}", userId, parameters);
+        return patch("/" + bookingId + "?approved=" + approved, userId);
     }
 
     public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
