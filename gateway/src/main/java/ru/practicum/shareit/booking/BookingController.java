@@ -35,6 +35,7 @@ public class BookingController {
 		return bookingClient.getBookingsPage(userId, state, from, size);
 
 	}
+
 	@GetMapping
 	public ResponseEntity<Object> getBookings(@RequestHeader(headerUserId) long userId,
 			@RequestParam(name = "state", defaultValue = "all") String stateParam) {
@@ -65,16 +66,12 @@ public class BookingController {
 
 	}
 
-
-
-
 	@GetMapping("/{bookingId}")
 	public ResponseEntity<Object> getBooking(@RequestHeader(headerUserId) long userId,
 			@PathVariable Long bookingId) {
 		log.info("Get booking {}, userId={}", bookingId, userId);
 		return bookingClient.getBooking(userId, bookingId);
 	}
-
 
 	@PostMapping
 	public ResponseEntity<Object> bookItem(@RequestHeader(headerUserId) long userId,
