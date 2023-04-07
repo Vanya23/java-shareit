@@ -43,30 +43,26 @@ public class BookingController {
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId);
         return bookingClient.getBookings(userId, state);
     }
-//    @GetMapping
-//    public ResponseEntity<Object> getBookings(@RequestHeader(headerUserId) long userId,
-//                                              @RequestParam(name = "state", defaultValue = "all") String stateParam) {
-//                return bookingClient.getBookings(userId, stateParam);
-//    }
 
-    @GetMapping(value = "/owner")
+
+    @GetMapping(value = "/owner", params = {"state"})
     public ResponseEntity<Object> getAllBookingsByOwner(@RequestHeader(headerUserId) long userId,
-                                                        @RequestParam(defaultValue = "ALL") String stateParam) {
-        BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId);
-        return bookingClient.getAllBookingsByOwner(userId, state);
+                                                        @RequestParam(defaultValue = "ALL") String state) {
+        BookingState stateB = BookingState.from(state)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
+        log.info("Get booking with state {}, userId={}, from={}, size={}", state, userId);
+        return bookingClient.getAllBookingsByOwner(userId, stateB);
     }
 
-    @GetMapping(value = "/owner", params = {"from", "size"})
+    @GetMapping(value = "/owner", params = {"state", "from", "size"})
     public ResponseEntity<Object> getAllBookingsByOwnerPage(@RequestHeader(headerUserId) long userId,
-                                                            @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                                            @RequestParam(name = "state", defaultValue = "all") String state,
                                                             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-        return bookingClient.getAllBookingsByOwnerPage(userId, state, from, size);
+        BookingState stateB = BookingState.from(state)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
+        log.info("Get booking with state {}, userId={}, from={}, size={}", state, userId, from, size);
+        return bookingClient.getAllBookingsByOwnerPage(userId, stateB, from, size);
 
     }
 
