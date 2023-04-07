@@ -38,6 +38,13 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getBookings(long userId, BookingState state) {
+//        BookingState bookingState;
+//        try {
+//            bookingState = BookingState.valueOf(state);
+//        } catch (IllegalArgumentException e) {
+//
+//            throw new RuntimeException("Unknown state: " + state);
+//        }
         Map<String, Object> parameters = Map.of(
                 "state", state.name()
         );

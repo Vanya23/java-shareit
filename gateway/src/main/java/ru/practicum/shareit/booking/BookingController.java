@@ -43,6 +43,11 @@ public class BookingController {
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId);
         return bookingClient.getBookings(userId, state);
     }
+//    @GetMapping
+//    public ResponseEntity<Object> getBookings(@RequestHeader(headerUserId) long userId,
+//                                              @RequestParam(name = "state", defaultValue = "all") String stateParam) {
+//                return bookingClient.getBookings(userId, stateParam);
+//    }
 
     @GetMapping(value = "/owner")
     public ResponseEntity<Object> getAllBookingsByOwner(@RequestHeader(headerUserId) long userId,
